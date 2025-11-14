@@ -36,10 +36,10 @@ Implementation of the iOS & tvOS application delegate.
         view.delegate = _renderer;
 
         NSWindow *window = [[NSWindow alloc] initWithContentRect:rect
-                                                     styleMask:NSWindowStyleMaskTitled
-                                                       backing:NSBackingStoreBuffered
-                                                         defer:NO
-                                                        screen:screen];
+                                                       styleMask:NSWindowStyleMaskTitled
+                                                         backing:NSBackingStoreBuffered
+                                                           defer:NO
+                                                          screen:screen];
         window.title = NSProcessInfo.processInfo.processName;
         window.contentView = view;
         _controller = [[NSWindowController alloc] initWithWindow:window];
