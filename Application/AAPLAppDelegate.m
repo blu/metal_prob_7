@@ -6,11 +6,57 @@ Implementation of the iOS & tvOS application delegate.
 */
 
 #import "AAPLAppDelegate.h"
+#import "AAPLRenderer.h"
+
+@interface AAPLAppDelegate ()
+{
+    NSWindowController *_controller;
+    AAPLRenderer *_renderer;
+}
+@end
 
 @implementation AAPLAppDelegate
 
-- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    return YES;
+- (instancetype) init {
+    self = [super init];
+    if (self) {
+        NSScreen *screen = [NSScreen mainScreen];
+        const size_t retina = screen.backingScaleFactor == 2.f ? 1 : 0;
+        CGRect rect = NSMakeRect(0, 0, 512 >> retina, 512 >> retina);
+        MTKView *view = [[MTKView alloc] initWithFrame:rect device:MTLCreateSystemDefaultDevice()];
+
+        // Keep drawing at a const (vsync) rate, if possible
+        view.enableSetNeedsDisplay = NO;
+        view.preferredFramesPerSecond = 120;
+
+        _renderer = [[AAPLRenderer alloc] initWithMTLDevice:view.device];
+
+        // Initialize the renderer with the view size.
+        [_renderer mtkView:view drawableSizeWillChange:view.drawableSize];
+        view.delegate = _renderer;
+
+        NSWindow *window = [[NSWindow alloc] initWithContentRect:rect
+                                                     styleMask:NSWindowStyleMaskTitled
+                                                       backing:NSBackingStoreBuffered
+                                                         defer:NO
+                                                        screen:screen];
+        window.title = NSProcessInfo.processInfo.processName;
+        window.contentView = view;
+        _controller = [[NSWindowController alloc] initWithWindow:window];
+    }
+
+    return self;
+}
+
+- (void)applicationWillFinishLaunching:(NSNotification *)aNotification {
+}
+
+- (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
+    NSWindow *window = [_controller window];
+    [window makeKeyAndOrderFront:self];
+}
+
+- (void)applicationWillTerminate:(NSNotification *)aNotification {
 }
 
 @end

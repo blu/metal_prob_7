@@ -5,31 +5,25 @@ Abstract:
 Application entry point for all platforms.
 */
 
-#if defined(TARGET_IOS) || defined(TARGET_TVOS)
-#import <UIKit/UIKit.h>
-#import <TargetConditionals.h>
-#import "AAPLAppDelegate.h"
-#else
 #import <Cocoa/Cocoa.h>
-#endif
-
-#if defined(TARGET_IOS) || defined(TARGET_TVOS)
-
-int main(int argc, char * argv[]) {
-
-#if TARGET_OS_SIMULATOR && (!defined(__IPHONE_13_0) ||  !defined(__TVOS_13_0))
-#error No simulator support for Metal API for this SDK version.  Must build for a device
-#endif
-
-    @autoreleasepool {
-        return UIApplicationMain(argc, argv, nil, NSStringFromClass([AAPLAppDelegate class]));
-    }
-}
-
-#elif defined(TARGET_MACOS)
+#import "AAPLAppDelegate.h"
 
 int main(int argc, const char * argv[]) {
-    return NSApplicationMain(argc, argv);
-}
+    @autoreleasepool {
+        NSApplication *application = [NSApplication sharedApplication];
+        [application activateIgnoringOtherApps: YES];
 
-#endif
+        // provide app menu with one item: quit
+        NSMenuItem *item = [[NSMenuItem alloc] init];
+        [item setSubmenu: [[NSMenu alloc] init]];
+        [item.submenu addItem: [[NSMenuItem alloc] initWithTitle: [@"Quit " stringByAppendingString: NSProcessInfo.processInfo.processName] action:@selector(terminate:) keyEquivalent:@"q"]];
+        [application setMainMenu: [[NSMenu alloc] init]];
+        [application.mainMenu addItem: item];
+
+        AAPLAppDelegate *appDelegate = [[AAPLAppDelegate alloc] init];
+        [application setDelegate: appDelegate];
+        [application run];
+    }
+
+    return EXIT_SUCCESS;
+}

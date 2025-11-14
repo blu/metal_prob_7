@@ -6,5 +6,7 @@
 	<string>Latest</string>
 	<key>DerivedDataLocationStyle</key>
 	<string>Default</string>
+	<key>PreviewsEnabled</key>
+	<false/>
 </dict>
 </plist>
