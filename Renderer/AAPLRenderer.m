@@ -29,7 +29,7 @@ static uint64_t timer_ns(void) {
 - (nonnull instancetype)initWithMTLDevice:(nonnull id<MTLDevice>)device
 {
     self = [super init];
-    if(self) {
+    if (self) {
         _device = device;
         _commandQueue = [_device newCommandQueue];
 
@@ -56,8 +56,7 @@ static uint8_t cnt;
 {
     // The render pass descriptor references the texture into which Metal should draw
     MTLRenderPassDescriptor *renderPassDescriptor = view.currentRenderPassDescriptor;
-    if (renderPassDescriptor == nil)
-    {
+    if (renderPassDescriptor == nil) {
         return;
     }
 
