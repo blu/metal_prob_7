@@ -26,6 +26,9 @@ static uint64_t timer_ns(void) {
     return t * tb.numer / tb.denom;
 }
 
+static uint8_t image0[IMAGE_RES_Y][IMAGE_RES_X];
+static uint8_t image1[IMAGE_RES_Y][IMAGE_RES_X];
+
 - (nonnull instancetype)initWithMTLDevice:(nonnull id<MTLDevice>)device
 {
     self = [super init];
@@ -34,6 +37,12 @@ static uint64_t timer_ns(void) {
         _commandQueue = [_device newCommandQueue];
 
         _clearColor = MTLClearColorMake(0.0, 0.5, 1.0, 1.0);
+
+        for (size_t i = 0; i < sizeof(image0) / sizeof(image0[0]); ++i)
+            for (size_t j = 0; j < sizeof(image0[0]) / sizeof(image0[0][0]); ++j) {
+                image0[i][j] = (i & 64) ^ (j & 64);
+                image1[i][j] = (i & 64) ^ (j & 64) ^ 64;
+            }
 
         mach_timebase_info(&tb);
     }
@@ -64,15 +73,24 @@ static uint8_t cnt;
     swap(&_clearColor.blue, &_clearColor.red);
 
     id<MTLCommandBuffer> commandBuffer = [_commandQueue commandBuffer];
-    
+#if 0
     // Create a render pass and immediately end encoding, causing the drawable to be cleared
     id<MTLRenderCommandEncoder> commandEncoder = [commandBuffer renderCommandEncoderWithDescriptor:renderPassDescriptor];
-    
+
     [commandEncoder endEncoding];
-    
+
     // Get the drawable that will be presented at the end of the frame
     id<MTLDrawable> drawable = view.currentDrawable;
 
+#else
+    id<CAMetalDrawable> drawable = view.currentDrawable;
+    id<MTLTexture> texture = drawable.texture;
+    [texture replaceRegion:MTLRegionMake2D(0, 0, IMAGE_RES_X, IMAGE_RES_Y)
+               mipmapLevel:0
+                 withBytes:((cnt & 1) ? image1 : image0)
+               bytesPerRow:sizeof(image0[0])];
+
+#endif
     // Request that the drawable texture be presented by the windowing system once drawing is done
     [commandBuffer presentDrawable:drawable];
     [commandBuffer commit];

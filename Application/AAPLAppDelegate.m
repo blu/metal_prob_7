@@ -22,12 +22,13 @@ Implementation of the iOS & tvOS application delegate.
     if (self) {
         NSScreen *screen = [NSScreen mainScreen];
         const size_t retina = screen.backingScaleFactor == 2.f ? 1 : 0;
-        CGRect rect = NSMakeRect(0, 0, 512 >> retina, 512 >> retina);
+        CGRect rect = NSMakeRect(0, 0, IMAGE_RES_X >> retina, IMAGE_RES_Y >> retina);
         MTKView *view = [[MTKView alloc] initWithFrame:rect device:MTLCreateSystemDefaultDevice()];
 
         // Keep drawing at a const (vsync) rate, if possible
         view.enableSetNeedsDisplay = NO;
         view.preferredFramesPerSecond = 120;
+        view.colorPixelFormat = MTLPixelFormatR8Unorm;
 
         _renderer = [[AAPLRenderer alloc] initWithMTLDevice:view.device];
 
