@@ -8,26 +8,25 @@ Implementation of a platform independent renderer class, which performs Metal se
 @import MetalKit;
 
 #import "AAPLRenderer.h"
-#include <mach/mach_time.h>
+
+extern void content_init(size_t view_w, size_t view_h);
+extern void content_deinit(void);
+extern void content_render(void *texture);
 
 // Main class performing the rendering
 @implementation AAPLRenderer
 {
     id<MTLDevice> _device;
     id<MTLCommandQueue> _commandQueue;
-
-    MTLClearColor _clearColor;
 }
 
-static mach_timebase_info_data_t tb;
-
-static uint64_t timer_ns(void) {
-    const uint64_t t = mach_absolute_time();
-    return t * tb.numer / tb.denom;
+void back_to_caller(void *texture, void *bytes, size_t perRow, size_t width, size_t height)
+{
+    [(__bridge id<MTLTexture>)texture replaceRegion:MTLRegionMake2D(0, 0, width, height)
+                                        mipmapLevel:0
+                                          withBytes:bytes
+                                        bytesPerRow:perRow];
 }
-
-static uint8_t image0[IMAGE_RES_Y][IMAGE_RES_X];
-static uint8_t image1[IMAGE_RES_Y][IMAGE_RES_X];
 
 - (nonnull instancetype)initWithMTLDevice:(nonnull id<MTLDevice>)device
 {
@@ -35,79 +34,42 @@ static uint8_t image1[IMAGE_RES_Y][IMAGE_RES_X];
     if (self) {
         _device = device;
         _commandQueue = [_device newCommandQueue];
-
-        _clearColor = MTLClearColorMake(0.0, 0.5, 1.0, 1.0);
-
-        for (size_t i = 0; i < sizeof(image0) / sizeof(image0[0]); ++i)
-            for (size_t j = 0; j < sizeof(image0[0]) / sizeof(image0[0][0]); ++j) {
-                image0[i][j] = (i & 64) ^ (j & 64);
-                image1[i][j] = (i & 64) ^ (j & 64) ^ 64;
-            }
-
-        mach_timebase_info(&tb);
     }
 
     return self;
 }
 
-static void swap(double *a, double *b)
-{
-    double t = *a;
-    *a = *b;
-    *b = t;
-}
-
-static uint64_t t_last;
-static uint8_t cnt;
-
 // Called whenever the view needs to render a frame.
 - (void)drawInMTKView:(nonnull MTKView *)view
 {
-    // The render pass descriptor references the texture into which Metal should draw
-    MTLRenderPassDescriptor *renderPassDescriptor = view.currentRenderPassDescriptor;
-    if (renderPassDescriptor == nil) {
-        return;
-    }
+    @autoreleasepool {
+        id<MTLCommandBuffer> commandBuffer = [_commandQueue commandBuffer];
 
-    view.clearColor = _clearColor;
-    swap(&_clearColor.blue, &_clearColor.red);
+        // Get the drawable that will be presented at the end of the frame
+        id<CAMetalDrawable> drawable = view.currentDrawable;
 
-    id<MTLCommandBuffer> commandBuffer = [_commandQueue commandBuffer];
-#if 0
-    // Create a render pass and immediately end encoding, causing the drawable to be cleared
-    id<MTLRenderCommandEncoder> commandEncoder = [commandBuffer renderCommandEncoderWithDescriptor:renderPassDescriptor];
+        // Get the drawable's texture to render content into
+        id<MTLTexture> texture = drawable.texture;
+        content_render((__bridge void *)texture);
 
-    [commandEncoder endEncoding];
-
-    // Get the drawable that will be presented at the end of the frame
-    id<MTLDrawable> drawable = view.currentDrawable;
-
-#else
-    id<CAMetalDrawable> drawable = view.currentDrawable;
-    id<MTLTexture> texture = drawable.texture;
-    [texture replaceRegion:MTLRegionMake2D(0, 0, IMAGE_RES_X, IMAGE_RES_Y)
-               mipmapLevel:0
-                 withBytes:((cnt & 1) ? image1 : image0)
-               bytesPerRow:sizeof(image0[0])];
-
-#endif
-    // Request that the drawable texture be presented by the windowing system once drawing is done
-    [commandBuffer presentDrawable:drawable];
-    [commandBuffer commit];
-
-    const uint64_t now = timer_ns();
-    const uint64_t then = t_last;
-    t_last = now;
-
-    if (cnt++ == 0 && then) {
-        const double period = (now - then) * 1e-9;
-        NSLog(@">>> %f", period);
+        // Request that the drawable texture be presented by the windowing system once drawing is done
+        [commandBuffer presentDrawable:drawable];
+        [commandBuffer commit];
     }
 }
 
 // Called whenever view changes orientation or is resized
 - (void)mtkView:(nonnull MTKView *)view drawableSizeWillChange:(CGSize)size
 {
+    const size_t draw_w = size.width;
+    const size_t draw_h = size.height;
+
+    content_init(draw_w, draw_h);
+}
+
+- (void) dealloc
+{
+    content_deinit();
 }
 
 @end

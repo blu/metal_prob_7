@@ -2,11 +2,14 @@
 See the LICENSE.txt file for this sample’s licensing information.
 
 Abstract:
-Implementation of the iOS & tvOS application delegate.
+Implementation of the macOS application delegate.
 */
 
 #import "AAPLAppDelegate.h"
 #import "AAPLRenderer.h"
+
+#define IMAGE_RES_X 2048
+#define IMAGE_RES_Y 1024
 
 @interface AAPLAppDelegate ()
 {
@@ -28,14 +31,14 @@ Implementation of the iOS & tvOS application delegate.
         // Keep drawing at a const (vsync) rate, if possible
         view.enableSetNeedsDisplay = NO;
         view.preferredFramesPerSecond = 120;
-        // Make sure the MTLTexture to be used by the view is not 'framebufferOnly',
+        // Make sure any MTLTexture to be used by the view's drawables is not 'framebufferOnly',
         // and set its texel format as expected by future replaceRegion updates
         view.framebufferOnly = NO;
         view.colorPixelFormat = MTLPixelFormatR8Unorm;
 
         _renderer = [[AAPLRenderer alloc] initWithMTLDevice:view.device];
 
-        // Initialize the renderer with the view size.
+        // Initialize the renderer with the view size
         [_renderer mtkView:view drawableSizeWillChange:view.drawableSize];
         view.delegate = _renderer;
 
@@ -52,15 +55,20 @@ Implementation of the iOS & tvOS application delegate.
     return self;
 }
 
-- (void)applicationWillFinishLaunching:(NSNotification *)aNotification {
+- (void)applicationWillFinishLaunching:(NSNotification *)aNotification
+{
 }
 
-- (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
+- (void)applicationDidFinishLaunching:(NSNotification *)aNotification
+{
     NSWindow *window = [_controller window];
     [window makeKeyAndOrderFront:self];
 }
 
-- (void)applicationWillTerminate:(NSNotification *)aNotification {
+- (void)applicationWillTerminate:(NSNotification *)aNotification
+{
+    // Drop our renderer's reference to trigger a -dealloc on it
+    _renderer = nil;
 }
 
 @end

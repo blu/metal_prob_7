@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		30298C162ECEA71F008870C4 /* hello.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 30298C152ECEA71F008870C4 /* hello.cpp */; };
 		30C670D72EAA81BB0052FB10 /* AAPLAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A58E27B222F7D9900072892 /* AAPLAppDelegate.m */; };
 		3A58E28C222F7ECD00072892 /* AAPLRenderer.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A58E28B222F7ECD00072892 /* AAPLRenderer.m */; };
 		3A58E292222F7F1700072892 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A58E287222F7D9900072892 /* main.m */; };
@@ -15,6 +16,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		30298C152ECEA71F008870C4 /* hello.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = hello.cpp; sourceTree = "<group>"; };
 		3A58E27A222F7D9900072892 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		3A58E27B222F7D9900072892 /* AAPLAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AAPLAppDelegate.m; sourceTree = "<group>"; };
 		3A58E287222F7D9900072892 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -49,6 +51,14 @@
 			name = Configuration;
 			sourceTree = "<group>";
 		};
+		30AF05ED2ED0C2C60048525B /* Content */ = {
+			isa = PBXGroup;
+			children = (
+				30298C152ECEA71F008870C4 /* hello.cpp */,
+			);
+			path = Content;
+			sourceTree = "<group>";
+		};
 		3A58E276222F7D9900072892 /* Application */ = {
 			isa = PBXGroup;
 			children = (
@@ -80,6 +90,7 @@
 		83E9F97D21ED168D00B393C1 = {
 			isa = PBXGroup;
 			children = (
+				30AF05ED2ED0C2C60048525B /* Content */,
 				3A58E276222F7D9900072892 /* Application */,
 				CF2B7FC6220B9DC7002847D1 /* Renderer */,
 				83E9F98721ED168D00B393C1 /* Products */,
@@ -189,6 +200,7 @@
 			files = (
 				30C670D72EAA81BB0052FB10 /* AAPLAppDelegate.m in Sources */,
 				3A58E292222F7F1700072892 /* main.m in Sources */,
+				30298C162ECEA71F008870C4 /* hello.cpp in Sources */,
 				3A58E28C222F7ECD00072892 /* AAPLRenderer.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

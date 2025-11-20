@@ -2,7 +2,7 @@
 See the LICENSE.txt file for this sample’s licensing information.
 
 Abstract:
-Application entry point for all platforms.
+Application entry point for macOS.
 */
 
 #import <Cocoa/Cocoa.h>
