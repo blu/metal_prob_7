@@ -28,6 +28,9 @@ Implementation of the iOS & tvOS application delegate.
         // Keep drawing at a const (vsync) rate, if possible
         view.enableSetNeedsDisplay = NO;
         view.preferredFramesPerSecond = 120;
+        // Make sure the MTLTexture to be used by the view is not 'framebufferOnly',
+        // and set its texel format as expected by future replaceRegion updates
+        view.framebufferOnly = NO;
         view.colorPixelFormat = MTLPixelFormatR8Unorm;
 
         _renderer = [[AAPLRenderer alloc] initWithMTLDevice:view.device];
