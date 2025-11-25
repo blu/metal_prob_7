@@ -6,7 +6,7 @@ Application entry point for macOS.
 */
 
 #import <Cocoa/Cocoa.h>
-#import "AAPLAppDelegate.h"
+#import "AppDelegate.h"
 
 int main(int argc, const char * argv[]) {
     @autoreleasepool {
@@ -20,7 +20,7 @@ int main(int argc, const char * argv[]) {
         [application setMainMenu: [[NSMenu alloc] init]];
         [application.mainMenu addItem: item];
 
-        AAPLAppDelegate *appDelegate = [[AAPLAppDelegate alloc] init];
+        AppDelegate *appDelegate = [[AppDelegate alloc] init];
         [application setDelegate: appDelegate];
         [application run];
     }

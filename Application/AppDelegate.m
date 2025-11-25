@@ -5,20 +5,20 @@ Abstract:
 Implementation of the macOS application delegate.
 */
 
-#import "AAPLAppDelegate.h"
-#import "AAPLRenderer.h"
+#import "AppDelegate.h"
+#import "MetalRenderer.h"
 
 #define IMAGE_RES_X 2048
 #define IMAGE_RES_Y 1024
 
-@interface AAPLAppDelegate ()
+@interface AppDelegate ()
 {
     NSWindowController *_controller;
-    AAPLRenderer *_renderer;
+    MetalRenderer *_renderer;
 }
 @end
 
-@implementation AAPLAppDelegate
+@implementation AppDelegate
 
 - (instancetype) init {
     self = [super init];
@@ -36,7 +36,7 @@ Implementation of the macOS application delegate.
         view.framebufferOnly = NO;
         view.colorPixelFormat = MTLPixelFormatR8Unorm;
 
-        _renderer = [[AAPLRenderer alloc] initWithMTLDevice:view.device];
+        _renderer = [[MetalRenderer alloc] initWithMTLDevice:view.device];
 
         // Initialize the renderer with the view size
         [_renderer mtkView:view drawableSizeWillChange:view.drawableSize];
@@ -61,8 +61,7 @@ Implementation of the macOS application delegate.
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
 {
-    NSWindow *window = [_controller window];
-    [window makeKeyAndOrderFront:self];
+    [_controller.window makeKeyAndOrderFront:self];
 }
 
 - (void)applicationWillTerminate:(NSNotification *)aNotification

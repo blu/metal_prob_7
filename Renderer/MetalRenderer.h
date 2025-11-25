@@ -7,7 +7,7 @@ Header for a platform independent renderer class, which performs Metal setup and
 
 @import MetalKit;
 
-@interface AAPLRenderer : NSObject<MTKViewDelegate>
+@interface MetalRenderer : NSObject<MTKViewDelegate>
 
 - (nonnull instancetype)initWithMTLDevice:(nonnull id<MTLDevice>)device;
 - (void) dealloc;

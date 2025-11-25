@@ -7,14 +7,14 @@ Implementation of a platform independent renderer class, which performs Metal se
 
 @import MetalKit;
 
-#import "AAPLRenderer.h"
+#import "MetalRenderer.h"
 
 extern void content_init(size_t view_w, size_t view_h);
 extern void content_deinit(void);
 extern void content_render(void *texture);
 
 // Main class performing the rendering
-@implementation AAPLRenderer
+@implementation MetalRenderer
 {
     id<MTLDevice> _device;
     id<MTLCommandQueue> _commandQueue;
