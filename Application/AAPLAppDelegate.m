@@ -25,7 +25,7 @@ Implementation of the macOS application delegate.
     if (self) {
         NSScreen *screen = [NSScreen mainScreen];
         const size_t retina = screen.backingScaleFactor == 2.f ? 1 : 0;
-        CGRect rect = NSMakeRect(0, 0, IMAGE_RES_X >> retina, IMAGE_RES_Y >> retina);
+        const NSRect rect = NSMakeRect(0, 0, IMAGE_RES_X >> retina, IMAGE_RES_Y >> retina);
         MTKView *view = [[MTKView alloc] initWithFrame:rect device:MTLCreateSystemDefaultDevice()];
 
         // Keep drawing at a const (vsync) rate, if possible
@@ -67,7 +67,6 @@ Implementation of the macOS application delegate.
 
 - (void)applicationWillTerminate:(NSNotification *)aNotification
 {
-    // Drop our renderer's reference to trigger a -dealloc on it
     _renderer = nil;
 }
 
