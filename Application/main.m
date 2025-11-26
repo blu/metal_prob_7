@@ -8,7 +8,8 @@ Application entry point for macOS.
 #import <Cocoa/Cocoa.h>
 #import "AppDelegate.h"
 
-int main(int argc, const char * argv[]) {
+int main(int argc, const char * argv[])
+{
     @autoreleasepool {
         NSApplication *application = [NSApplication sharedApplication];
         [application activateIgnoringOtherApps: YES];
