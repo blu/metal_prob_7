@@ -9,3 +9,11 @@ using namespace metal;
     const uint8_t r = (gid.y & 64) ^ (gid.x & 64);
     result[gid.x + gid.y * gdim.x] = r;
 }
+
+[[kernel]] void holla(
+    texture2d<half, access::write> result [[texture(0)]],
+    uint2 gid [[thread_position_in_grid]])
+{
+    const uint8_t r = (gid.y & 64) ^ (gid.x & 64);
+    result.write(r * half(1.0 / 255.0), gid);
+}

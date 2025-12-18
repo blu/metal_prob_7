@@ -9,6 +9,8 @@ Implementation of a platform independent renderer class, which performs Metal se
 
 #import "MetalRenderer.h"
 
+#define USE_BUFFER 0
+
 @implementation MetalRenderer
 {
     id<MTLDevice> _device;
@@ -36,7 +38,11 @@ Implementation of a platform independent renderer class, which performs Metal se
         _device = device;
 
         id<MTLLibrary> defaultLibrary = [_device newDefaultLibrary];
+#if USE_BUFFER
         id<MTLFunction> fnHello = [defaultLibrary newFunctionWithName:@"hello"];
+#else
+        id<MTLFunction> fnHello = [defaultLibrary newFunctionWithName:@"holla"];
+#endif
 
         if (fnHello == nil) {
             NSLog(@"error: Failed to find the adder function.");
@@ -65,6 +71,9 @@ Implementation of a platform independent renderer class, which performs Metal se
         const size_t group_w = _group.w;
         const size_t group_h = _group.h;
 
+        id<CAMetalDrawable> drawable = view.currentDrawable;
+        id<MTLTexture> texture = drawable.texture;
+
         // execute compute kernel
         {
             id<MTLCommandBuffer> commandBuffer = [_commandQueue commandBuffer];
@@ -72,10 +81,14 @@ Implementation of a platform independent renderer class, which performs Metal se
             id<MTLComputeCommandEncoder> computeEncoder = [commandBuffer computeCommandEncoder];
 
             [computeEncoder setComputePipelineState:_fnHelloPSO];
+#if USE_BUFFER
             [computeEncoder setBuffer:_buffer
                                offset:0
                               atIndex:0];
-
+#else
+            [computeEncoder setTexture:texture
+                               atIndex:0];
+#endif
             MTLSize gridSize = MTLSizeMake(draw_w / group_w, draw_h / group_h, 1);
             MTLSize groupSize = MTLSizeMake(group_w, group_h, 1);
 
@@ -83,17 +96,21 @@ Implementation of a platform independent renderer class, which performs Metal se
                            threadsPerThreadgroup:groupSize];
 
             [computeEncoder endEncoding];
+
+#if USE_BUFFER
             [commandBuffer commit];
 
             // force-sync to kernel completion as buffer content will be accessed next
             [commandBuffer waitUntilCompleted];
+#else
+            [commandBuffer presentDrawable:drawable];
+            [commandBuffer commit];
+#endif
         }
+#if USE_BUFFER
         // present drawable
         {
             id<MTLCommandBuffer> commandBuffer = [_commandQueue commandBuffer];
-
-            id<CAMetalDrawable> drawable = view.currentDrawable;
-            id<MTLTexture> texture = drawable.texture;
 
             const uint8_t *const buffer = _buffer.contents;
             [texture replaceRegion:MTLRegionMake2D(0, 0, draw_w, draw_h)
@@ -104,6 +121,7 @@ Implementation of a platform independent renderer class, which performs Metal se
             [commandBuffer presentDrawable:drawable];
             [commandBuffer commit];
         }
+#endif
     }
 }
 
