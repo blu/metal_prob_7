@@ -110,15 +110,15 @@ Implementation of a platform independent renderer class, which performs Metal se
 #endif
         }
 #if USE_BUFFER
+        const uint8_t *const buffer = _buffer.contents;
+        [texture replaceRegion:MTLRegionMake2D(0, 0, draw_w, draw_h)
+                   mipmapLevel:0
+                     withBytes:buffer
+                   bytesPerRow:draw_w * sizeof(*buffer)];
+
         // present drawable
         {
             id<MTLCommandBuffer> commandBuffer = [_commandQueue commandBuffer];
-
-            const uint8_t *const buffer = _buffer.contents;
-            [texture replaceRegion:MTLRegionMake2D(0, 0, draw_w, draw_h)
-                       mipmapLevel:0
-                         withBytes:buffer
-                       bytesPerRow:draw_w * sizeof(*buffer)];
 
             [commandBuffer presentDrawable:drawable];
             [commandBuffer commit];
