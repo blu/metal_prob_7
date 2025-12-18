@@ -9,30 +9,47 @@ Implementation of a platform independent renderer class, which performs Metal se
 
 #import "MetalRenderer.h"
 
-extern void content_init(size_t view_w, size_t view_h);
-extern void content_deinit(void);
-extern void content_render(void *texture);
-
-// Main class performing the rendering
 @implementation MetalRenderer
 {
     id<MTLDevice> _device;
+    id<MTLComputePipelineState> _fnHelloPSO;
     id<MTLCommandQueue> _commandQueue;
-}
 
-void back_to_caller(void *texture, void *bytes, size_t perRow, size_t width, size_t height)
-{
-    [(__bridge id<MTLTexture>)texture replaceRegion:MTLRegionMake2D(0, 0, width, height)
-                                        mipmapLevel:0
-                                          withBytes:bytes
-                                        bytesPerRow:perRow];
+    id<MTLBuffer> _buffer;
+
+    struct {
+        NSUInteger w;
+        NSUInteger h;
+    } _draw;
+    struct {
+        NSUInteger w;
+        NSUInteger h;
+    } _group;
 }
 
 - (nonnull instancetype)initWithMTLDevice:(nonnull id<MTLDevice>)device
 {
     self = [super init];
     if (self) {
+        NSError* error = nil;
+
         _device = device;
+
+        id<MTLLibrary> defaultLibrary = [_device newDefaultLibrary];
+        id<MTLFunction> fnHello = [defaultLibrary newFunctionWithName:@"hello"];
+
+        if (fnHello == nil) {
+            NSLog(@"error: Failed to find the adder function.");
+            return nil;
+        }
+
+        _fnHelloPSO = [_device newComputePipelineStateWithFunction:fnHello error:&error];
+
+        if (_fnHelloPSO == nil) {
+            NSLog(@"error: Failed to created pipeline state object, error %@.", error);
+            return nil;
+        }
+
         _commandQueue = [_device newCommandQueue];
     }
 
@@ -43,33 +60,77 @@ void back_to_caller(void *texture, void *bytes, size_t perRow, size_t width, siz
 - (void)drawInMTKView:(nonnull MTKView *)view
 {
     @autoreleasepool {
-        id<MTLCommandBuffer> commandBuffer = [_commandQueue commandBuffer];
+        const size_t draw_w = _draw.w;
+        const size_t draw_h = _draw.h;
+        const size_t group_w = _group.w;
+        const size_t group_h = _group.h;
 
-        // Get the drawable that will be presented at the end of the frame
-        id<CAMetalDrawable> drawable = view.currentDrawable;
+        // execute compute kernel
+        {
+            id<MTLCommandBuffer> commandBuffer = [_commandQueue commandBuffer];
 
-        // Get the drawable's texture to render content into
-        id<MTLTexture> texture = drawable.texture;
-        content_render((__bridge void *)texture);
+            id<MTLComputeCommandEncoder> computeEncoder = [commandBuffer computeCommandEncoder];
 
-        // Request that the drawable texture be presented by the windowing system once drawing is done
-        [commandBuffer presentDrawable:drawable];
-        [commandBuffer commit];
+            [computeEncoder setComputePipelineState:_fnHelloPSO];
+            [computeEncoder setBuffer:_buffer
+                               offset:0
+                              atIndex:0];
+
+            MTLSize gridSize = MTLSizeMake(draw_w / group_w, draw_h / group_h, 1);
+            MTLSize groupSize = MTLSizeMake(group_w, group_h, 1);
+
+            [computeEncoder dispatchThreadgroups:gridSize
+                           threadsPerThreadgroup:groupSize];
+
+            [computeEncoder endEncoding];
+            [commandBuffer commit];
+
+            // force-sync to kernel completion as buffer content will be accessed
+            [commandBuffer waitUntilCompleted];
+        }
+        // present drawable
+        {
+            id<MTLCommandBuffer> commandBuffer = [_commandQueue commandBuffer];
+
+            id<CAMetalDrawable> drawable = view.currentDrawable;
+            id<MTLTexture> texture = drawable.texture;
+
+            const uint8_t *const buffer = _buffer.contents;
+            [texture replaceRegion:MTLRegionMake2D(0, 0, draw_w, draw_h)
+                       mipmapLevel:0
+                         withBytes:buffer
+                       bytesPerRow:draw_w * sizeof(*buffer)];
+
+            [commandBuffer presentDrawable:drawable];
+            [commandBuffer commit];
+        }
     }
 }
 
 // Called whenever view changes orientation or is resized
 - (void)mtkView:(nonnull MTKView *)view drawableSizeWillChange:(CGSize)size
 {
-    const size_t draw_w = size.width;
-    const size_t draw_h = size.height;
+    const size_t draw_w = _draw.w = size.width;
+    const size_t draw_h = _draw.h = size.height;
+    const size_t gridArea = draw_w * draw_h;
+    const NSUInteger bufferLen = gridArea * sizeof(uint8_t);
 
-    content_init(draw_w, draw_h);
+    _buffer = [_device newBufferWithLength:bufferLen options:MTLResourceStorageModeShared];
+
+    NSUInteger threadgroupSize = _fnHelloPSO.maxTotalThreadsPerThreadgroup;
+    if (threadgroupSize > gridArea) {
+        threadgroupSize = gridArea;
+    }
+    NSUInteger execSize = _fnHelloPSO.threadExecutionWidth;
+    if (execSize > draw_w) {
+        execSize = draw_w;
+    }
+    _group.w = execSize;
+    _group.h = threadgroupSize / execSize;
 }
 
 - (void) dealloc
 {
-    content_deinit();
 }
 
 @end
