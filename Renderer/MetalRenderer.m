@@ -17,8 +17,10 @@ Implementation of a platform independent renderer class, which performs Metal se
     id<MTLComputePipelineState> _fnHelloPSO;
     id<MTLCommandQueue> _commandQueue;
 
+#if USE_BUFFER
     id<MTLBuffer> _buffer;
 
+#endif
     struct {
         NSUInteger w;
         NSUInteger h;
@@ -131,10 +133,12 @@ Implementation of a platform independent renderer class, which performs Metal se
     const size_t draw_w = _draw.w = size.width;
     const size_t draw_h = _draw.h = size.height;
     const size_t gridArea = draw_w * draw_h;
+#if USE_BUFFER
     const NSUInteger bufferLen = gridArea * sizeof(uint8_t);
 
     _buffer = [_device newBufferWithLength:bufferLen options:MTLResourceStorageModeShared];
 
+#endif
     NSUInteger threadgroupSize = _fnHelloPSO.maxTotalThreadsPerThreadgroup;
     if (threadgroupSize > gridArea) {
         threadgroupSize = gridArea;
