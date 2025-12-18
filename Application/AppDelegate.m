@@ -8,8 +8,8 @@ Implementation of the macOS application delegate.
 #import "AppDelegate.h"
 #import "MetalRenderer.h"
 
-#define IMAGE_RES_X 512
-#define IMAGE_RES_Y 512
+#define IMAGE_RES_X 2560
+#define IMAGE_RES_Y 1440
 
 @interface AppDelegate ()
 {
@@ -30,7 +30,7 @@ Implementation of the macOS application delegate.
 
         // Keep drawing at a const (vsync) rate, if possible
         view.enableSetNeedsDisplay = NO;
-        view.preferredFramesPerSecond = 60;
+        view.preferredFramesPerSecond = 120;
 
         // Make sure any MTLTexture to be used by the view's drawables is not 'framebufferOnly',
         // and set its texel format as expected by future replaceRegion updates
