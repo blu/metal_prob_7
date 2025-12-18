@@ -85,7 +85,7 @@ Implementation of a platform independent renderer class, which performs Metal se
             [computeEncoder endEncoding];
             [commandBuffer commit];
 
-            // force-sync to kernel completion as buffer content will be accessed
+            // force-sync to kernel completion as buffer content will be accessed next
             [commandBuffer waitUntilCompleted];
         }
         // present drawable
