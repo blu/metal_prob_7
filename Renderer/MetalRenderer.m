@@ -67,6 +67,8 @@ Implementation of a platform independent renderer class, which performs Metal se
 // Called whenever the view needs to render a frame.
 - (void)drawInMTKView:(nonnull MTKView *)view
 {
+    static uint32_t frame;
+
     @autoreleasepool {
         const size_t draw_w = _draw.w;
         const size_t draw_h = _draw.h;
@@ -87,9 +89,17 @@ Implementation of a platform independent renderer class, which performs Metal se
             [computeEncoder setBuffer:_buffer
                                offset:0
                               atIndex:0];
+
+            [computeEncoder setBytes:&frame
+                              length:sizeof(frame)
+                             atIndex:1];
 #else
             [computeEncoder setTexture:texture
                                atIndex:0];
+
+            [computeEncoder setBytes:&frame
+                              length:sizeof(frame)
+                             atIndex:0];
 #endif
             MTLSize gridSize = MTLSizeMake(draw_w / group_w, draw_h / group_h, 1);
             MTLSize groupSize = MTLSizeMake(group_w, group_h, 1);
@@ -125,6 +135,8 @@ Implementation of a platform independent renderer class, which performs Metal se
         }
 #endif
     }
+
+    frame++;
 }
 
 // Called whenever view changes orientation or is resized
