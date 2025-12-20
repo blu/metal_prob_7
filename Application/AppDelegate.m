@@ -8,15 +8,14 @@ Implementation of the macOS application delegate.
 #import "AppDelegate.h"
 #import "MetalRenderer.h"
 
-#define IMAGE_RES_X 2560
-#define IMAGE_RES_Y 1440
-
 @interface AppDelegate ()
 {
     NSWindowController *_controller;
     MetalRenderer *_renderer;
 }
 @end
+
+extern struct cli_param param;
 
 @implementation AppDelegate
 
@@ -25,12 +24,12 @@ Implementation of the macOS application delegate.
     if (self) {
         NSScreen *screen = [NSScreen mainScreen];
         const size_t retina = screen.backingScaleFactor == 2.f ? 1 : 0;
-        const NSRect rect = NSMakeRect(0, 0, IMAGE_RES_X >> retina, IMAGE_RES_Y >> retina);
+        const NSRect rect = NSMakeRect(0, 0, param.image_w >> retina, param.image_h >> retina);
         MTKView *view = [[MTKView alloc] initWithFrame:rect device:MTLCreateSystemDefaultDevice()];
 
         // Keep drawing at a const (vsync) rate, if possible
         view.enableSetNeedsDisplay = NO;
-        view.preferredFramesPerSecond = 120;
+        view.preferredFramesPerSecond = param.image_hz;
 
         // Make sure any MTLTexture to be used by the view's drawables is not 'framebufferOnly',
         // and set its texel format as expected by future replaceRegion updates
