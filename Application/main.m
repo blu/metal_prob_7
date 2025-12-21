@@ -12,6 +12,8 @@ const char arg_prefix[]                   = "-";
 const char arg_screen[]                   = "screen";
 const char arg_frames[]                   = "frames";
 
+struct cli_param param;
+
 static bool
 validate_fullscreen(
     const char *const string,
@@ -80,8 +82,6 @@ static int parseCLI(
 
     return 0;
 }
-
-struct cli_param param;
 
 int main(int argc, const char * argv[])
 {
