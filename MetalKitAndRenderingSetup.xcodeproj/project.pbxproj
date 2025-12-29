@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3052AC492EFCB83B008E55AD /* monokernel.metal in Sources */ = {isa = PBXBuildFile; fileRef = 3052AC482EFCB83B008E55AD /* monokernel.metal */; };
 		30C154462EF37AAC00AD7438 /* hello.metal in Sources */ = {isa = PBXBuildFile; fileRef = 30C154452EF37AAC00AD7438 /* hello.metal */; };
 		30C670D72EAA81BB0052FB10 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A58E27B222F7D9900072892 /* AppDelegate.m */; };
 		3A58E28C222F7ECD00072892 /* MetalRenderer.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A58E28B222F7ECD00072892 /* MetalRenderer.m */; };
@@ -16,6 +17,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		3052AC482EFCB83B008E55AD /* monokernel.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = monokernel.metal; sourceTree = "<group>"; };
 		30C154452EF37AAC00AD7438 /* hello.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = hello.metal; sourceTree = "<group>"; };
 		3A58E27A222F7D9900072892 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		3A58E27B222F7D9900072892 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -54,6 +56,7 @@
 		30C154442EF37A7E00AD7438 /* Kernel */ = {
 			isa = PBXGroup;
 			children = (
+				3052AC482EFCB83B008E55AD /* monokernel.metal */,
 				30C154452EF37AAC00AD7438 /* hello.metal */,
 			);
 			path = Kernel;
@@ -201,6 +204,7 @@
 				30C670D72EAA81BB0052FB10 /* AppDelegate.m in Sources */,
 				30C154462EF37AAC00AD7438 /* hello.metal in Sources */,
 				3A58E292222F7F1700072892 /* main.m in Sources */,
+				3052AC492EFCB83B008E55AD /* monokernel.metal in Sources */,
 				3A58E28C222F7ECD00072892 /* MetalRenderer.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
