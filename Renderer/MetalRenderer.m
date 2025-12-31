@@ -8,8 +8,11 @@ Implementation of a platform independent renderer class, which performs Metal se
 @import MetalKit;
 
 #import "MetalRenderer.h"
+#import "param.h"
 
 #define USE_BUFFER 0
+
+extern struct cli_param param;
 
 @implementation MetalRenderer
 {
@@ -19,16 +22,7 @@ Implementation of a platform independent renderer class, which performs Metal se
 
 #if USE_BUFFER
     id<MTLBuffer> _buffer;
-
 #endif
-    struct {
-        NSUInteger w;
-        NSUInteger h;
-    } _draw;
-    struct {
-        NSUInteger w;
-        NSUInteger h;
-    } _group;
 }
 
 - (nonnull instancetype)initWithMTLDevice:(nonnull id<MTLDevice>)device
@@ -70,10 +64,10 @@ Implementation of a platform independent renderer class, which performs Metal se
     static uint32_t frame;
 
     @autoreleasepool {
-        const size_t draw_w = _draw.w;
-        const size_t draw_h = _draw.h;
-        const size_t group_w = _group.w;
-        const size_t group_h = _group.h;
+        const size_t draw_w = param.image_w;
+        const size_t draw_h = param.image_h;
+        const size_t group_w = param.group_w;
+        const size_t group_h = param.group_h;
 
         id<CAMetalDrawable> drawable = view.currentDrawable;
         id<MTLTexture> texture = drawable.texture;
@@ -142,25 +136,47 @@ Implementation of a platform independent renderer class, which performs Metal se
 // Called whenever view changes orientation or is resized
 - (void)mtkView:(nonnull MTKView *)view drawableSizeWillChange:(CGSize)size
 {
-    const size_t draw_w = _draw.w = size.width;
-    const size_t draw_h = _draw.h = size.height;
-    const size_t gridArea = draw_w * draw_h;
+    assert(size.width == param.image_w);
+    assert(size.height == param.image_h);
+
+    const unsigned draw_w = size.width;
+    const unsigned draw_h = size.height;
+    const unsigned gridSize = draw_w * draw_h;
+    const unsigned threadgroupSizeMax = (unsigned) _fnHelloPSO.maxTotalThreadsPerThreadgroup;
+
+    unsigned threadgroupSize = param.group_w != -1U ? param.group_w * param.group_h : threadgroupSizeMax;
+    if (threadgroupSize > gridSize) {
+        threadgroupSize = gridSize;
+    }
+
+    if (threadgroupSize > threadgroupSizeMax) {
+        NSLog(@"error: group size exceeds limit (%u)", threadgroupSizeMax);
+        [[NSApplication sharedApplication] terminate:nil];
+        return;
+    }
+
+    unsigned threadgroupWidth = param.group_w != -1U ? param.group_w : (unsigned) _fnHelloPSO.threadExecutionWidth;
+    if (threadgroupWidth > draw_w) {
+        threadgroupWidth = draw_w;
+    }
+
+    param.group_w = threadgroupWidth;
+    param.group_h = threadgroupSize / threadgroupWidth;
+
+    if (draw_w % param.group_w || draw_h % param.group_h) {
+        NSLog(@"error: grid size not a multiple of group size (%u, %u)", param.group_w, param.group_h);
+        [[NSApplication sharedApplication] terminate:nil];
+        return;
+    }
+
+    NSLog(@"grid size (%u, %u)", param.group_w, param.group_h);
+
 #if USE_BUFFER
-    const NSUInteger bufferLen = gridArea * sizeof(uint8_t);
+    const NSUInteger bufferLen = gridSize * sizeof(uint8_t);
 
     _buffer = [_device newBufferWithLength:bufferLen options:MTLResourceStorageModeShared];
 
 #endif
-    NSUInteger threadgroupSize = _fnHelloPSO.maxTotalThreadsPerThreadgroup;
-    if (threadgroupSize > gridArea) {
-        threadgroupSize = gridArea;
-    }
-    NSUInteger execSize = _fnHelloPSO.threadExecutionWidth;
-    if (execSize > draw_w) {
-        execSize = draw_w;
-    }
-    _group.w = execSize;
-    _group.h = threadgroupSize / execSize;
 }
 
 - (void) dealloc

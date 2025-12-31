@@ -7,6 +7,7 @@ Implementation of the macOS application delegate.
 
 #import "AppDelegate.h"
 #import "MetalRenderer.h"
+#import "param.h"
 
 @interface AppDelegate ()
 {

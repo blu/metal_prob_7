@@ -7,10 +7,13 @@ Application entry point for macOS.
 
 #import <Cocoa/Cocoa.h>
 #import "AppDelegate.h"
+#import "param.h"
 
 const char arg_prefix[]                   = "-";
 const char arg_screen[]                   = "screen";
 const char arg_frames[]                   = "frames";
+const char arg_group_size[]               = "group_size";
+
 
 struct cli_param param;
 
@@ -60,6 +63,13 @@ static int parseCLI(
             continue;
         }
 
+        if (!strcmp(argv[i] + prefix_len, arg_group_size)) {
+            if (++i == argc || 2 != sscanf(argv[i], "%u %u", &param->group_w, &param->group_h) || param->group_w == 0 || param->group_h == 0)
+                success = false;
+
+            continue;
+        }
+
         if (!strcmp(argv[i] + prefix_len, arg_frames)) {
             if (++i == argc || 1 != sscanf(argv[i], "%u", &param->frames))
                 success = false;
@@ -74,8 +84,9 @@ static int parseCLI(
         fprintf(stderr, "usage: %s [<option> ...]\n"
             "options (multiple args to an option must constitute a single string, eg. -foo \"a b c\"):\n"
             "\t%s%s <width> <height> <Hz>\t: set framebuffer of specified geometry and refresh\n"
-            "\t%s%s <unsigned_integer>\t: set number of frames to run; default is max unsigned int\n",
-            argv[0], arg_prefix, arg_screen, arg_prefix, arg_frames);
+            "\t%s%s <unsigned_integer>\t: set number of frames to run; default is max unsigned int\n"
+            "\t%s%s <width> <height>\t: metal workgroup size (2D)\n",
+            argv[0], arg_prefix, arg_screen, arg_prefix, arg_frames, arg_prefix, arg_group_size);
 
         return 1;
     }
@@ -89,6 +100,8 @@ int main(int argc, const char * argv[])
     param.image_h = 1440;
     param.image_hz = 60;
     param.frames = -1U;
+    param.group_w = -1U;
+    param.group_h = -1U;
 
     if (parseCLI(argc, argv, &param)) {
         return -1;
