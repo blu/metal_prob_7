@@ -22,6 +22,7 @@ extern struct cli_param param;
 
 #if USE_BUFFER
     id<MTLBuffer> _buffer;
+
 #endif
 }
 
@@ -34,12 +35,14 @@ extern struct cli_param param;
         _device = device;
 
         id<MTLLibrary> defaultLibrary = [_device newDefaultLibrary];
+
 #if USE_BUFFER
         id<MTLFunction> fnHello = [defaultLibrary newFunctionWithName:@"hello"];
+
 #else
         id<MTLFunction> fnHello = [defaultLibrary newFunctionWithName:@"holla"];
-#endif
 
+#endif
         if (fnHello == nil) {
             NSLog(@"error: Failed to find the adder function.");
             return nil;
@@ -52,7 +55,46 @@ extern struct cli_param param;
             return nil;
         }
 
+        const unsigned draw_w = param.image_w;
+        const unsigned draw_h = param.image_h;
+        const unsigned drawSize = draw_w * draw_h;
+        const unsigned threadgroupSizeMax = (unsigned) _fnHelloPSO.maxTotalThreadsPerThreadgroup;
+
+        unsigned threadgroupSize = param.group_w != -1U ? param.group_w * param.group_h : threadgroupSizeMax;
+        if (threadgroupSize > drawSize) {
+            threadgroupSize = drawSize;
+        }
+
+        if (threadgroupSize > threadgroupSizeMax) {
+            NSLog(@"error: group size exceeds limit (%u)", threadgroupSizeMax);
+            [[NSApplication sharedApplication] terminate:nil];
+            return nil;
+        }
+
+        unsigned threadgroupWidth = param.group_w != -1U ? param.group_w : (unsigned) _fnHelloPSO.threadExecutionWidth;
+        if (threadgroupWidth > draw_w) {
+            threadgroupWidth = draw_w;
+        }
+
+        param.group_w = threadgroupWidth;
+        param.group_h = threadgroupSize / threadgroupWidth;
+
+        if (draw_w % param.group_w || draw_h % param.group_h) {
+            NSLog(@"error: grid size not a multiple of group size (%u, %u)", param.group_w, param.group_h);
+            [[NSApplication sharedApplication] terminate:nil];
+            return nil;
+        }
+
+        NSLog(@"grid size (%u, %u)", param.group_w, param.group_h);
+
         _commandQueue = [_device newCommandQueue];
+
+#if USE_BUFFER
+        const NSUInteger bufferLen = drawSize * sizeof(uint8_t);
+
+        _buffer = [_device newBufferWithLength:bufferLen options:MTLResourceStorageModeShared];
+
+#endif
     }
 
     return self;
@@ -138,45 +180,6 @@ extern struct cli_param param;
 {
     assert(size.width == param.image_w);
     assert(size.height == param.image_h);
-
-    const unsigned draw_w = size.width;
-    const unsigned draw_h = size.height;
-    const unsigned gridSize = draw_w * draw_h;
-    const unsigned threadgroupSizeMax = (unsigned) _fnHelloPSO.maxTotalThreadsPerThreadgroup;
-
-    unsigned threadgroupSize = param.group_w != -1U ? param.group_w * param.group_h : threadgroupSizeMax;
-    if (threadgroupSize > gridSize) {
-        threadgroupSize = gridSize;
-    }
-
-    if (threadgroupSize > threadgroupSizeMax) {
-        NSLog(@"error: group size exceeds limit (%u)", threadgroupSizeMax);
-        [[NSApplication sharedApplication] terminate:nil];
-        return;
-    }
-
-    unsigned threadgroupWidth = param.group_w != -1U ? param.group_w : (unsigned) _fnHelloPSO.threadExecutionWidth;
-    if (threadgroupWidth > draw_w) {
-        threadgroupWidth = draw_w;
-    }
-
-    param.group_w = threadgroupWidth;
-    param.group_h = threadgroupSize / threadgroupWidth;
-
-    if (draw_w % param.group_w || draw_h % param.group_h) {
-        NSLog(@"error: grid size not a multiple of group size (%u, %u)", param.group_w, param.group_h);
-        [[NSApplication sharedApplication] terminate:nil];
-        return;
-    }
-
-    NSLog(@"grid size (%u, %u)", param.group_w, param.group_h);
-
-#if USE_BUFFER
-    const NSUInteger bufferLen = gridSize * sizeof(uint8_t);
-
-    _buffer = [_device newBufferWithLength:bufferLen options:MTLResourceStorageModeShared];
-
-#endif
 }
 
 - (void) dealloc
