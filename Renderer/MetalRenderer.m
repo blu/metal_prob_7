@@ -12,8 +12,6 @@ Implementation of a platform independent renderer class, which performs Metal se
 
 #define USE_BUFFER 0
 
-extern struct cli_param param;
-
 @implementation MetalRenderer
 {
     id<MTLDevice> _device;

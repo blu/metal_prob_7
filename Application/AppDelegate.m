@@ -16,8 +16,6 @@ Implementation of the macOS application delegate.
 }
 @end
 
-extern struct cli_param param;
-
 @implementation AppDelegate
 
 - (instancetype) init {

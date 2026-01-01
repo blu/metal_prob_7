@@ -6,3 +6,5 @@ struct cli_param {
     unsigned group_w;       // workgroup width
     unsigned group_h;       // workgroup height
 };
+
+extern struct cli_param param;
