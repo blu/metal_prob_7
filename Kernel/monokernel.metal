@@ -18,140 +18,140 @@ typedef bool __attribute__((ext_vector_type(8))) b8;
 
 int3 convert_int3(b3 a)
 {
-    return -int3(
-        int(a[0]),
-        int(a[1]),
-        int(a[2]));
+	return -int3(
+		int(a[0]),
+		int(a[1]),
+		int(a[2]));
 }
 
 int4 convert_int4(b4 a)
 {
-    return -int4(
-        int(a[0]),
-        int(a[1]),
-        int(a[2]),
-        int(a[3]));
+	return -int4(
+		int(a[0]),
+		int(a[1]),
+		int(a[2]),
+		int(a[3]));
 }
 
 s32x8 convert_int8(b8 a)
 {
-    return -s32x8(
-        int(a[0]),
-        int(a[1]),
-        int(a[2]),
-        int(a[3]),
-        int(a[4]),
-        int(a[5]),
-        int(a[6]),
-        int(a[7]));
+	return -s32x8(
+		int(a[0]),
+		int(a[1]),
+		int(a[2]),
+		int(a[3]),
+		int(a[4]),
+		int(a[5]),
+		int(a[6]),
+		int(a[7]));
 }
 
 u32x8 convert_uint8(u16x8 a)
 {
-    return u32x8(
-        int(a[0]),
-        int(a[1]),
-        int(a[2]),
-        int(a[3]),
-        int(a[4]),
-        int(a[5]),
-        int(a[6]),
-        int(a[7]));
+	return u32x8(
+		int(a[0]),
+		int(a[1]),
+		int(a[2]),
+		int(a[3]),
+		int(a[4]),
+		int(a[5]),
+		int(a[6]),
+		int(a[7]));
 }
 
 uint32_t as_uint(float a)
 {
-    return reinterpret_cast< thread uint32_t& >(a);
+	return reinterpret_cast< thread uint32_t& >(a);
 }
 
 int3 as_int3(float3 a)
 {
-    return reinterpret_cast< thread int3& >(a);
+	return reinterpret_cast< thread int3& >(a);
 }
 
 float as_float(uint a)
 {
-    return reinterpret_cast< thread float& >(a);
+	return reinterpret_cast< thread float& >(a);
 }
 
 float3 as_float3(int3 a)
 {
-    return reinterpret_cast< thread float3& >(a);
+	return reinterpret_cast< thread float3& >(a);
 }
 
 int isless(float a, float b)
 {
-    return a < b;
+	return a < b;
 }
 
 s32x8 isless(f32x8 a, f32x8 b)
 {
-    return convert_int8(a < b);
+	return convert_int8(a < b);
 }
 
 int3 islessequal(float3 a, float3 b)
 {
-    return convert_int3(a <= b);
+	return convert_int3(a <= b);
 }
 
 int4 islessequal(float4 a, float4 b)
 {
-    return convert_int4(a <= b);
+	return convert_int4(a <= b);
 }
 
 int isgreaterequal(float a, float b)
 {
-    return a >= b;
+	return a >= b;
 }
 
 int4 select(int4 a, int4 b, int4 c)
 {
-    return int4(
-        c[0] ? b[0] : a[0],
-        c[1] ? b[1] : a[1],
-        c[2] ? b[2] : a[2],
-        c[3] ? b[3] : a[3]);
+	return int4(
+		c[0] ? b[0] : a[0],
+		c[1] ? b[1] : a[1],
+		c[2] ? b[2] : a[2],
+		c[3] ? b[3] : a[3]);
 }
 
 float3 select(float3 a, float3 b, uint3 c)
 {
-    return float3(
-        c[0] ? b[0] : a[0],
-        c[1] ? b[1] : a[1],
-        c[2] ? b[2] : a[2]);
+	return float3(
+		c[0] ? b[0] : a[0],
+		c[1] ? b[1] : a[1],
+		c[2] ? b[2] : a[2]);
 }
 
 f32x8 select(f32x8 a, f32x8 b, s32x8 c)
 {
-    return f32x8(
-        c[0] ? b[0] : a[0],
-        c[1] ? b[1] : a[1],
-        c[2] ? b[2] : a[2],
-        c[3] ? b[3] : a[3],
-        c[4] ? b[4] : a[4],
-        c[5] ? b[5] : a[5],
-        c[6] ? b[6] : a[6],
-        c[7] ? b[7] : a[7]);
+	return f32x8(
+		c[0] ? b[0] : a[0],
+		c[1] ? b[1] : a[1],
+		c[2] ? b[2] : a[2],
+		c[3] ? b[3] : a[3],
+		c[4] ? b[4] : a[4],
+		c[5] ? b[5] : a[5],
+		c[6] ? b[6] : a[6],
+		c[7] ? b[7] : a[7]);
 }
 
 f32x8 fmin(f32x8 a, f32x8 b)
 {
-    const float4 a_lo = float4(a[0], a[1], a[2], a[3]);
-    const float4 a_hi = float4(a[4], a[5], a[6], a[7]);
-    const float4 b_lo = float4(b[0], b[1], b[2], b[3]);
-    const float4 b_hi = float4(b[4], b[5], b[6], b[7]);
+	const float4 a_lo = float4(a[0], a[1], a[2], a[3]);
+	const float4 a_hi = float4(a[4], a[5], a[6], a[7]);
+	const float4 b_lo = float4(b[0], b[1], b[2], b[3]);
+	const float4 b_hi = float4(b[4], b[5], b[6], b[7]);
 
-    return f32x8(fmin(a_lo, b_lo), fmin(a_hi, b_hi));
+	return f32x8(fmin(a_lo, b_lo), fmin(a_hi, b_hi));
 }
 
 f32x8 fmax(f32x8 a, f32x8 b)
 {
-    const float4 a_lo = float4(a[0], a[1], a[2], a[3]);
-    const float4 a_hi = float4(a[4], a[5], a[6], a[7]);
-    const float4 b_lo = float4(b[0], b[1], b[2], b[3]);
-    const float4 b_hi = float4(b[4], b[5], b[6], b[7]);
+	const float4 a_lo = float4(a[0], a[1], a[2], a[3]);
+	const float4 a_hi = float4(a[4], a[5], a[6], a[7]);
+	const float4 b_lo = float4(b[0], b[1], b[2], b[3]);
+	const float4 b_hi = float4(b[4], b[5], b[6], b[7]);
 
-    return f32x8(fmax(a_lo, b_lo), fmax(a_hi, b_hi));
+	return f32x8(fmax(a_lo, b_lo), fmax(a_hi, b_hi));
 }
 
 #define M_PI 3.1415926535897932f
@@ -427,10 +427,10 @@ uint octet_intersect_wide(
 	r &= occupancy;
 
 #if OCL_QUIRK_0004
-    const s32x8 cnt0 = -r;
-    const int4 cnt1 = int4(cnt0[0], cnt0[1], cnt0[2], cnt0[3]) + int4(cnt0[4], cnt0[5], cnt0[6], cnt0[7]);
-    const int2 cnt2 = int2(cnt1[0], cnt1[1]) + int2(cnt1[2], cnt1[3]);
-    const int count = cnt2[0] + cnt2[1];
+	const s32x8 cnt0 = -r;
+	const int4 cnt1 = int4(cnt0[0], cnt0[1], cnt0[2], cnt0[3]) + int4(cnt0[4], cnt0[5], cnt0[6], cnt0[7]);
+	const int2 cnt2 = int2(cnt1[0], cnt1[1]) + int2(cnt1[2], cnt1[3]);
+	const int count = cnt2[0] + cnt2[1];
 
 #else
 	int count = 0;
@@ -706,11 +706,7 @@ void monokernel(
 	device const ushort4* const src_a [[buffer(0)]],
 	device const ushort4* const src_b [[buffer(1)]],
 	device const float4* const src_c [[buffer(2)]],
-#if OCL_QUIRK_0001
-	constant float* const src_d [[buffer(3)]],
-#else
-	constant float4* const src_d [[buffer(3)]],
-#endif
+	constant     float4* const src_d [[buffer(3)]],
     texture2d< half, access::write > dst [[texture(0)]],
     uint2 gid [[thread_position_in_grid]],
     uint2 gdim [[threads_per_grid]])
@@ -720,23 +716,15 @@ void monokernel(
 	const int idy = int(gid.y);
 	const int dimx = int(gdim.x);
 	const int dimy = int(gdim.y);
-#if OCL_QUIRK_0001
-	const float3 cam0 = float3(src_d[0], src_d[1], src_d[ 2]);
-	const float3 cam1 = float3(src_d[4], src_d[5], src_d[ 6]);
-	const float3 cam2 = float3(src_d[8], src_d[9], src_d[10]);
-	const float3 ray_origin = float3(src_d[12], src_d[13], src_d[14]);
-	const float3 bbox_min   = float3(src_d[16], src_d[17], src_d[18]);
-	const float3 bbox_max   = float3(src_d[20], src_d[21], src_d[22]);
-    const uint frame        = as_uint(src_d[23]);
-#else
+
 	const float3 cam0 = src_d[0].xyz;
 	const float3 cam1 = src_d[1].xyz;
 	const float3 cam2 = src_d[2].xyz;
 	const float3 ray_origin = src_d[3].xyz;
 	const float3 bbox_min   = src_d[4].xyz;
 	const float3 bbox_max   = src_d[5].xyz;
-    const uint frame        = as_uint(src_d[5].w);
-#endif
+	const uint frame        = 0; // as_uint(src_d[5].w);
+
 	const struct BBox root_bbox = { bbox_min, bbox_max };
 	const float3 ray_direction =
 		cam0 * ((idx * 2 - dimx) * (1.0f / dimx)) +
@@ -769,16 +757,11 @@ void monokernel(
 		// compute a bounce vector in some TBN space, in this case of an assumed normal along x-axis
 		const float3 hemi = float3(cos_decl, cos_azim * sin_decl, sin_azim * sin_decl);
 
-#if OCL_QUIRK_0002
 		const uint a_mask = ray.hit.a_mask;
 		const uint b_mask = ray.hit.b_mask;
 		const float3 normal = b_mask ? (a_mask ? hemi.xyz : hemi.zxy) : hemi.yzx;
-#else
-		const uint a_mask = -ray.hit.a_mask;
-		const uint b_mask = -ray.hit.b_mask;
-		const float3 normal = select(hemi.yzx, select(hemi.zxy, hemi.xyz, uint3(a_mask)), uint3(b_mask));
-#endif
-		const int3 axis_sign = (int3)(0x80000000) & ray.hit.min_mask;
+
+		const int3 axis_sign = int3(0x80000000) & ray.hit.min_mask;
 		const float dist = ray.ray.rcpdir.w;
 		const float3 ray_rcpdir = clamp(1.f / as_float3(as_int3(normal) ^ axis_sign), -MAXFLOAT, MAXFLOAT);
 		const struct Ray ray = { float4(ray_origin + ray_direction * dist, as_float(result)), float4(ray_rcpdir, MAXFLOAT) };
@@ -788,6 +771,6 @@ void monokernel(
 		result = 0;
 
 // source_epilogue
-    dst.write(result * half(1.0 / 255.0), gid);
+	dst.write(result * half(1.0 / 255.0), gid);
 }
 

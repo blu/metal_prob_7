@@ -8,8 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		3052AC492EFCB83B008E55AD /* monokernel.metal in Sources */ = {isa = PBXBuildFile; fileRef = 3052AC482EFCB83B008E55AD /* monokernel.metal */; };
-		30C154462EF37AAC00AD7438 /* hello.metal in Sources */ = {isa = PBXBuildFile; fileRef = 30C154452EF37AAC00AD7438 /* hello.metal */; };
 		30C670D72EAA81BB0052FB10 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A58E27B222F7D9900072892 /* AppDelegate.m */; };
+		30E01EA52F0C6F3400F05947 /* param.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 30E01EA42F0C6F3400F05947 /* param.cpp */; };
+		30E01EAD2F0C779100F05947 /* problem_6.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 30E01EAB2F0C779100F05947 /* problem_6.cpp */; };
 		3A58E28C222F7ECD00072892 /* MetalRenderer.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A58E28B222F7ECD00072892 /* MetalRenderer.m */; };
 		3A58E292222F7F1700072892 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A58E287222F7D9900072892 /* main.m */; };
 		83E9F9A021ED16D900B393C1 /* Metal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 83E9F99E21ED16D900B393C1 /* Metal.framework */; };
@@ -17,15 +18,17 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		3052AC482EFCB83B008E55AD /* monokernel.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = monokernel.metal; sourceTree = "<group>"; };
-		3097F7732F05B16200B7BECA /* param.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = param.h; sourceTree = "<group>"; };
-		30C154452EF37AAC00AD7438 /* hello.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = hello.metal; sourceTree = "<group>"; };
+		3052AC482EFCB83B008E55AD /* monokernel.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = monokernel.metal; sourceTree = "<group>"; usesTabs = 1; };
+		30E01EA32F0C6F3400F05947 /* param.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = param.h; sourceTree = "<group>"; usesTabs = 1; };
+		30E01EA42F0C6F3400F05947 /* param.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = param.cpp; sourceTree = "<group>"; usesTabs = 1; };
+		30E01EAB2F0C779100F05947 /* problem_6.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = problem_6.cpp; path = ../cg2_2014_demo/prob_7/problem_6.cpp; sourceTree = "<group>"; usesTabs = 1; };
+		30E01EAC2F0C779100F05947 /* problem_6.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = problem_6.hpp; path = ../cg2_2014_demo/prob_7/problem_6.hpp; sourceTree = "<group>"; usesTabs = 1; };
 		3A58E27A222F7D9900072892 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		3A58E27B222F7D9900072892 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
-		3A58E287222F7D9900072892 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		3A58E288222F7D9900072892 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
-		3A58E28A222F7ECD00072892 /* MetalRenderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MetalRenderer.h; sourceTree = "<group>"; };
-		3A58E28B222F7ECD00072892 /* MetalRenderer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MetalRenderer.m; sourceTree = "<group>"; };
+		3A58E27B222F7D9900072892 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; usesTabs = 1; };
+		3A58E287222F7D9900072892 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; usesTabs = 1; };
+		3A58E288222F7D9900072892 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; usesTabs = 1; };
+		3A58E28A222F7ECD00072892 /* MetalRenderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MetalRenderer.h; sourceTree = "<group>"; usesTabs = 1; };
+		3A58E28B222F7ECD00072892 /* MetalRenderer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MetalRenderer.m; sourceTree = "<group>"; usesTabs = 1; };
 		83E9F98621ED168D00B393C1 /* MetalKitAndRenderingSetup.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MetalKitAndRenderingSetup.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		83E9F99E21ED16D900B393C1 /* Metal.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Metal.framework; path = System/Library/Frameworks/Metal.framework; sourceTree = SDKROOT; };
 		83E9F99F21ED16D900B393C1 /* MetalKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MetalKit.framework; path = System/Library/Frameworks/MetalKit.framework; sourceTree = SDKROOT; };
@@ -58,15 +61,31 @@
 			isa = PBXGroup;
 			children = (
 				3052AC482EFCB83B008E55AD /* monokernel.metal */,
-				30C154452EF37AAC00AD7438 /* hello.metal */,
 			);
 			path = Kernel;
+			sourceTree = "<group>";
+		};
+		30E01EA22F0C6F3400F05947 /* Content */ = {
+			isa = PBXGroup;
+			children = (
+				30E01EA32F0C6F3400F05947 /* param.h */,
+				30E01EA42F0C6F3400F05947 /* param.cpp */,
+			);
+			path = Content;
+			sourceTree = "<group>";
+		};
+		30E01EAA2F0C76C500F05947 /* extern */ = {
+			isa = PBXGroup;
+			children = (
+				30E01EAB2F0C779100F05947 /* problem_6.cpp */,
+				30E01EAC2F0C779100F05947 /* problem_6.hpp */,
+			);
+			name = extern;
 			sourceTree = "<group>";
 		};
 		3A58E276222F7D9900072892 /* Application */ = {
 			isa = PBXGroup;
 			children = (
-				3097F7732F05B16200B7BECA /* param.h */,
 				3A58E288222F7D9900072892 /* AppDelegate.h */,
 				3A58E27B222F7D9900072892 /* AppDelegate.m */,
 				3A58E287222F7D9900072892 /* main.m */,
@@ -95,6 +114,8 @@
 		83E9F97D21ED168D00B393C1 = {
 			isa = PBXGroup;
 			children = (
+				30E01EAA2F0C76C500F05947 /* extern */,
+				30E01EA22F0C6F3400F05947 /* Content */,
 				30C154442EF37A7E00AD7438 /* Kernel */,
 				3A58E276222F7D9900072892 /* Application */,
 				CF2B7FC6220B9DC7002847D1 /* Renderer */,
@@ -204,10 +225,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				30C670D72EAA81BB0052FB10 /* AppDelegate.m in Sources */,
-				30C154462EF37AAC00AD7438 /* hello.metal in Sources */,
+				30E01EAD2F0C779100F05947 /* problem_6.cpp in Sources */,
 				3A58E292222F7F1700072892 /* main.m in Sources */,
 				3052AC492EFCB83B008E55AD /* monokernel.metal in Sources */,
 				3A58E28C222F7ECD00072892 /* MetalRenderer.m in Sources */,
+				30E01EA52F0C6F3400F05947 /* param.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -337,9 +359,11 @@
 				DEVELOPMENT_TEAM = "";
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"$(inherited)",
-					TARGET_MACOS,
+				GCC_FAST_MATH = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = "MINIMAL_TREE=1";
+				HEADER_SEARCH_PATHS = (
+					../cg2_2014_demo/common,
+					../cg2_2014_demo/prob_7,
 				);
 				INFOPLIST_FILE = "$(SRCROOT)/Application/macOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -347,9 +371,12 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 11.1;
+				MTL_PREPROCESSOR_DEFINITIONS = "INFINITE_RAY=1";
+				PRECOMPS_INCLUDE_HEADERS_FROM_BUILT_PRODUCTS_DIR = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.example.apple-samplecode.$(PRODUCT_NAME)${SAMPLE_CODE_DISAMBIGUATOR}";
 				PRODUCT_NAME = MetalKitAndRenderingSetup;
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				SHARED_PRECOMPS_DIR = "";
 			};
 			name = Debug;
 		};
@@ -362,16 +389,27 @@
 				DEVELOPMENT_TEAM = "";
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
-				GCC_PREPROCESSOR_DEFINITIONS = TARGET_MACOS;
+				GCC_FAST_MATH = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_PREPROCESSOR_DEFINITIONS = "MINIMAL_TREE=1";
+				HEADER_SEARCH_PATHS = (
+					../cg2_2014_demo/common,
+					../cg2_2014_demo/prob_7,
+				);
 				INFOPLIST_FILE = "$(SRCROOT)/Application/macOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
+				LLVM_LTO = YES;
 				MACOSX_DEPLOYMENT_TARGET = 11.1;
+				MTL_PREPROCESSOR_DEFINITIONS = "INFINITE_RAY=1";
+				ONLY_ACTIVE_ARCH = YES;
+				PRECOMPS_INCLUDE_HEADERS_FROM_BUILT_PRODUCTS_DIR = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.example.apple-samplecode.$(PRODUCT_NAME)${SAMPLE_CODE_DISAMBIGUATOR}";
 				PRODUCT_NAME = MetalKitAndRenderingSetup;
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				SHARED_PRECOMPS_DIR = "";
 			};
 			name = Release;
 		};
