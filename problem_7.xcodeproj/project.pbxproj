@@ -29,7 +29,7 @@
 		3A58E288222F7D9900072892 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; usesTabs = 1; };
 		3A58E28A222F7ECD00072892 /* MetalRenderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MetalRenderer.h; sourceTree = "<group>"; usesTabs = 1; };
 		3A58E28B222F7ECD00072892 /* MetalRenderer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MetalRenderer.m; sourceTree = "<group>"; usesTabs = 1; };
-		83E9F98621ED168D00B393C1 /* MetalKitAndRenderingSetup.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MetalKitAndRenderingSetup.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		83E9F98621ED168D00B393C1 /* problem_7.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = problem_7.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		83E9F99E21ED16D900B393C1 /* Metal.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Metal.framework; path = System/Library/Frameworks/Metal.framework; sourceTree = SDKROOT; };
 		83E9F99F21ED16D900B393C1 /* MetalKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MetalKit.framework; path = System/Library/Frameworks/MetalKit.framework; sourceTree = SDKROOT; };
 		CF7F421B23731058925FEE5E /* LICENSE.txt */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = LICENSE.txt; sourceTree = "<group>"; };
@@ -129,7 +129,7 @@
 		83E9F98721ED168D00B393C1 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				83E9F98621ED168D00B393C1 /* MetalKitAndRenderingSetup.app */,
+				83E9F98621ED168D00B393C1 /* problem_7.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -155,9 +155,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		83E9F98521ED168D00B393C1 /* MetalKitAndRenderingSetup-macOS */ = {
+		83E9F98521ED168D00B393C1 /* problem_7-macOS */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 83E9F99A21ED168F00B393C1 /* Build configuration list for PBXNativeTarget "MetalKitAndRenderingSetup-macOS" */;
+			buildConfigurationList = 83E9F99A21ED168F00B393C1 /* Build configuration list for PBXNativeTarget "problem_7-macOS" */;
 			buildPhases = (
 				83E9F98221ED168D00B393C1 /* Sources */,
 				83E9F98321ED168D00B393C1 /* Frameworks */,
@@ -167,9 +167,9 @@
 			);
 			dependencies = (
 			);
-			name = "MetalKitAndRenderingSetup-macOS";
+			name = "problem_7-macOS";
 			productName = MetalKitAndRenderPasses;
-			productReference = 83E9F98621ED168D00B393C1 /* MetalKitAndRenderingSetup.app */;
+			productReference = 83E9F98621ED168D00B393C1 /* problem_7.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -191,7 +191,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 83E9F98121ED168D00B393C1 /* Build configuration list for PBXProject "MetalKitAndRenderingSetup" */;
+			buildConfigurationList = 83E9F98121ED168D00B393C1 /* Build configuration list for PBXProject "problem_7" */;
 			compatibilityVersion = "Xcode 9.3";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -204,7 +204,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				83E9F98521ED168D00B393C1 /* MetalKitAndRenderingSetup-macOS */,
+				83E9F98521ED168D00B393C1 /* problem_7-macOS */,
 			);
 		};
 /* End PBXProject section */
@@ -377,7 +377,7 @@
 				MTL_PREPROCESSOR_DEFINITIONS = "INFINITE_RAY=1 USE_DST_BUFFER=1";
 				PRECOMPS_INCLUDE_HEADERS_FROM_BUILT_PRODUCTS_DIR = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.example.apple-samplecode.$(PRODUCT_NAME)${SAMPLE_CODE_DISAMBIGUATOR}";
-				PRODUCT_NAME = MetalKitAndRenderingSetup;
+				PRODUCT_NAME = problem_7;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SHARED_PRECOMPS_DIR = "";
 			};
@@ -418,7 +418,7 @@
 				OTHER_CPLUSPLUSFLAGS = "$(OTHER_CFLAGS)";
 				PRECOMPS_INCLUDE_HEADERS_FROM_BUILT_PRODUCTS_DIR = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.example.apple-samplecode.$(PRODUCT_NAME)${SAMPLE_CODE_DISAMBIGUATOR}";
-				PRODUCT_NAME = MetalKitAndRenderingSetup;
+				PRODUCT_NAME = problem_7;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SHARED_PRECOMPS_DIR = "";
 			};
@@ -427,7 +427,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		83E9F98121ED168D00B393C1 /* Build configuration list for PBXProject "MetalKitAndRenderingSetup" */ = {
+		83E9F98121ED168D00B393C1 /* Build configuration list for PBXProject "problem_7" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				83E9F99821ED168F00B393C1 /* Debug */,
@@ -436,7 +436,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		83E9F99A21ED168F00B393C1 /* Build configuration list for PBXNativeTarget "MetalKitAndRenderingSetup-macOS" */ = {
+		83E9F99A21ED168F00B393C1 /* Build configuration list for PBXNativeTarget "problem_7-macOS" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				83E9F99B21ED168F00B393C1 /* Debug */,
