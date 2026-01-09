@@ -707,9 +707,13 @@ void monokernel(
 	device const ushort4* const src_b [[buffer(1)]],
 	device const float4* const src_c [[buffer(2)]],
 	constant     float4* const src_d [[buffer(3)]],
-    texture2d< half, access::write > dst [[texture(0)]],
-    uint2 gid [[thread_position_in_grid]],
-    uint2 gdim [[threads_per_grid]])
+#if USE_DST_BUFFER
+	device       uchar* const dst [[buffer(4)]],
+#else
+	texture2d< half, access::write > dst [[texture(0)]],
+#endif
+	uint2 gid [[thread_position_in_grid]],
+	uint2 gdim [[threads_per_grid]])
 {
 // source_main
 	const int idx = int(gid.x);
@@ -771,6 +775,10 @@ void monokernel(
 		result = 0;
 
 // source_epilogue
+#if USE_DST_BUFFER
+	dst[gid.x + gid.y * gdim.x] = result;
+#else
 	dst.write(result * half(1.0 / 255.0), gid);
+#endif
 }
 

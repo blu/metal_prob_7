@@ -10,9 +10,15 @@ Implementation of a platform independent renderer class, which performs Metal se
 #import "MetalRenderer.h"
 #import "param.h"
 
-#define USE_BUFFER 0
+enum { n_buffering = 8 };
 
-enum { n_buffering = 3 };
+// the larger n-buffering is, the more opportunity we give to the rendering loop
+// to mask frame-pacing issues, i.e. infrequent frame time inconsistencies; this
+// does not help against unmaintainable framerate targets, though, which will
+// manifest as constant tearing and/or frame glitches, no matter the size of
+// n-buffering
+
+static_assert(n_buffering > 1, "n-buffering must be greater than 1");
 
 @implementation MetalRenderer
 {
@@ -22,7 +28,7 @@ enum { n_buffering = 3 };
 
 	id<MTLBuffer> _src_buffer[n_buffering][buffer_designation_count];
 
-#if USE_BUFFER
+#if USE_DST_BUFFER
 	id<MTLBuffer> _dst_buffer[n_buffering];
 
 #endif
@@ -98,7 +104,7 @@ struct content_init_arg cont_init_arg;
 			}
 		}
 
-#if USE_BUFFER
+#if USE_DST_BUFFER
 		const NSUInteger bufferLen = drawSize * sizeof(uint8_t);
 
 		for (size_t bi = 0; bi < n_buffering; bi++) {
@@ -116,7 +122,7 @@ struct content_init_arg cont_init_arg;
 - (void)drawInMTKView:(nonnull MTKView *)view
 {
 	static uint32_t frame_idx;
-	const uint32_t frame = frame_idx++;
+	uint32_t frame = frame_idx++;
 
 	@autoreleasepool {
 
@@ -155,7 +161,7 @@ struct content_init_arg cont_init_arg;
 								  atIndex:b_idx++];
 			}
 
-#if USE_BUFFER
+#if USE_DST_BUFFER
 			[computeEncoder setBuffer:_dst_buffer[frame % n_buffering]
 							   offset:0
 							  atIndex:b_idx++];
@@ -173,11 +179,8 @@ struct content_init_arg cont_init_arg;
 
 			[computeEncoder endEncoding];
 
-#if USE_BUFFER
+#if USE_DST_BUFFER
 			[commandBuffer commit];
-
-			// force-sync to kernel completion as buffer content will be accessed next
-			[commandBuffer waitUntilCompleted];
 
 #else
 			[commandBuffer presentDrawable:drawable];
@@ -186,7 +189,12 @@ struct content_init_arg cont_init_arg;
 #endif
 		}
 
-#if USE_BUFFER
+#if USE_DST_BUFFER
+		if (frame < n_buffering - 1)
+			return;
+
+		frame -= n_buffering - 1;
+
 		const uint8_t *const buffer = _dst_buffer[frame % n_buffering].contents;
 		[texture replaceRegion:MTLRegionMake2D(0, 0, draw_w, draw_h)
 				   mipmapLevel:0
