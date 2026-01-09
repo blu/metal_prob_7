@@ -83,7 +83,7 @@ struct content_init_arg cont_init_arg;
 			return nil;
 		}
 
-		NSLog(@"grid size (%u, %u)", param.group_w, param.group_h);
+		NSLog(@"grid size (%u, %u), group size (%u, %u)", param.image_w, param.image_h, param.group_w, param.group_h);
 
 		_commandQueue = [_device newCommandQueue];
 
