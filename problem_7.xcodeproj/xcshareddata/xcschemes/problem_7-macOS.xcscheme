@@ -15,7 +15,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "83E9F98521ED168D00B393C1"
-               BuildableName = "MetalKitAndRenderingSetup.app"
+               BuildableName = "problem_7.app"
                BlueprintName = "problem_7-macOS"
                ReferencedContainer = "container:problem_7.xcodeproj">
             </BuildableReference>
@@ -45,7 +45,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "83E9F98521ED168D00B393C1"
-            BuildableName = "MetalKitAndRenderingSetup.app"
+            BuildableName = "problem_7.app"
             BlueprintName = "problem_7-macOS"
             ReferencedContainer = "container:problem_7.xcodeproj">
          </BuildableReference>
@@ -68,7 +68,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "83E9F98521ED168D00B393C1"
-            BuildableName = "MetalKitAndRenderingSetup.app"
+            BuildableName = "problem_7.app"
             BlueprintName = "problem_7-macOS"
             ReferencedContainer = "container:problem_7.xcodeproj">
          </BuildableReference>
