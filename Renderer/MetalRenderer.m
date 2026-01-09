@@ -10,7 +10,7 @@ Implementation of a platform independent renderer class, which performs Metal se
 #import "MetalRenderer.h"
 #import "param.h"
 
-enum { n_buffering = 8 };
+enum { n_buffering = 16 };
 
 // the larger n-buffering is, the more opportunity we give to the rendering loop
 // to mask frame-pacing issues, i.e. infrequent frame time inconsistencies; this
