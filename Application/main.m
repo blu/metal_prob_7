@@ -15,6 +15,7 @@ int main(int argc, const char * argv[])
 	param.image_h = 1440;
 	param.image_hz = 60;
 	param.frames = -1U;
+	param.frame_msk = -1U;
 	param.group_w = -1U;
 	param.group_h = -1U;
 

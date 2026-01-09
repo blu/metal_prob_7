@@ -36,6 +36,7 @@ out cerr;
 const char arg_prefix[]                   = "-";
 const char arg_screen[]                   = "screen";
 const char arg_frames[]                   = "frames";
+const char arg_frame_invar_rng[]          = "frame_invar_rng";
 const char arg_workgroup_size[]           = "group_size";
 
 namespace testbed {
@@ -109,6 +110,11 @@ int parseCLI(
 			continue;
 		}
 
+		if (!std::strcmp(argv[i] + prefix_len, arg_frame_invar_rng)) {
+			param->frame_msk = 0;
+			continue;
+		}
+
 		if (!std::strcmp(argv[i] + prefix_len, arg_workgroup_size)) {
 			if (++i == argc || 2 != sscanf(argv[i], "%u %u", &param->group_w, &param->group_h) || param->group_w == 0 || param->group_h == 0)
 				success = false;
@@ -124,7 +130,8 @@ int parseCLI(
 			"options (multiple args to an option must constitute a single string, eg. -foo \"a b c\"):\n"
 			"\t" << arg_prefix << arg_screen << " <width> <height> <Hz>\t: set framebuffer of specified geometry and refresh\n"
 			"\t" << arg_prefix << arg_frames << " <unsigned_integer>\t: set number of frames to run; default is max unsigned int\n"
-			"\t" << arg_prefix << arg_workgroup_size << " <positive_integer>\t: set workgroup size; must be even; default is CL_KERNEL_WORK_GROUP_SIZE\n";
+			"\t" << arg_prefix << arg_frame_invar_rng << "\t\t: use frame-invariant RNG for sampling\n"
+			"\t" << arg_prefix << arg_workgroup_size << " <width> <height>\t: set workgroup geometry; default is (execution_width, max_threads_per_group / execution_width)\n";
 
 		return 1;
 	}
@@ -1350,7 +1357,7 @@ const size_t carb_count = mem_size_carb / sizeof(simd::f32x4);
 uint64_t tlast;
 
 #endif
-size_t frame_idx;
+uint32_t frame_id;
 
 Array< Timeslice > timeline;
 
@@ -1478,11 +1485,12 @@ int content_deinit(void)
 
 int content_frame(content_frame_arg arg)
 {
-	const size_t image_w = param.image_w;
-	const size_t image_h = param.image_h;
-	const size_t frames  = param.frames;
+	const uint32_t image_w = param.image_w;
+	const uint32_t image_h = param.image_h;
+	const uint32_t frames  = param.frames;
+	const uint32_t fmask   = param.frame_msk;
 
-	const size_t frame = frame_idx++;
+	const uint32_t frame = frame_id++;
 
 	void *octet_map_buffer = arg.buffer[buffer_octet];
 	void *leaf_map_buffer  = arg.buffer[buffer_leaf];
@@ -1587,6 +1595,9 @@ int content_frame(content_frame_arg arg)
 	// root bbox
 	carb[4] = timeline.getElement(c::scene_selector).get_root_bbox().get_min();
 	carb[5] = timeline.getElement(c::scene_selector).get_root_bbox().get_max();
+	// frame id
+	const uint32_t masked_frame = frame & fmask;
+	carb[5].set(3, reinterpret_cast< const float& >(masked_frame));
 
 	return 0;
 }

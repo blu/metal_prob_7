@@ -727,7 +727,7 @@ void monokernel(
 	const float3 ray_origin = src_d[3].xyz;
 	const float3 bbox_min   = src_d[4].xyz;
 	const float3 bbox_max   = src_d[5].xyz;
-	const uint frame        = 0; // as_uint(src_d[5].w);
+	const uint frame        = as_uint(src_d[5].w);
 
 	const struct BBox root_bbox = { bbox_min, bbox_max };
 	const float3 ray_direction =
