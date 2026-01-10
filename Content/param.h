@@ -1,14 +1,16 @@
 #ifndef param_H__
 #define param_H__
 
+#include <stdint.h>
+
 struct cli_param {
-	unsigned image_w;       // frame width
-	unsigned image_h;       // frame height
-	unsigned image_hz;      // frame rate target Hz
-	unsigned frames;        // frames to run
-	unsigned frame_msk;     // frame_id mask
-	unsigned group_w;       // workgroup width
-	unsigned group_h;       // workgroup height
+	uint32_t image_w;       // frame width
+	uint32_t image_h;       // frame height
+	uint32_t image_hz;      // frame rate target Hz
+	uint32_t frames;        // frames to run
+	uint32_t frame_msk;     // frame_id mask
+	uint32_t group_w;       // workgroup width
+	uint32_t group_h;       // workgroup height
 };
 
 enum buffer_designations {
@@ -21,7 +23,7 @@ enum buffer_designations {
 };
 
 struct content_init_arg {
-	unsigned buffer_size[buffer_designation_count];
+	uint32_t buffer_size[buffer_designation_count];
 };
 
 struct content_frame_arg {
@@ -32,9 +34,10 @@ struct content_frame_arg {
 extern "C" {
 #endif
 
-extern struct cli_param param;
+extern struct cli_param param; // updated by parseCLI
+extern uint32_t frame_id;      // updated by content_frame
 
-int parseCLI(int, const char **, struct cli_param *);
+int parseCLI(int, const char **);
 int content_init(struct content_init_arg *);
 int content_deinit(void);
 int content_frame(struct content_frame_arg);

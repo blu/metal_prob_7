@@ -12,7 +12,7 @@ int main(int argc, const char * argv[])
 	param.group_w = -1U;
 	param.group_h = -1U;
 
-	if (parseCLI(argc, argv, &param)) {
+	if (parseCLI(argc, argv)) {
 		return -1;
 	}
 

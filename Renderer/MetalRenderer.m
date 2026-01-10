@@ -115,8 +115,7 @@ struct content_init_arg cont_init_arg;
 // Called whenever the view needs to render a frame.
 - (void)drawInMTKView:(nonnull MTKView *)view
 {
-	static uint32_t frame_idx;
-	uint32_t frame = frame_idx++;
+	uint32_t frame = frame_id; // frame_id updated by content_frame below
 
 	@autoreleasepool {
 

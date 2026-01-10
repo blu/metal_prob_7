@@ -79,8 +79,7 @@ validate_fullscreen(
 
 int parseCLI(
 	int argc,
-	const char **argv,
-	cli_param *param) {
+	const char **argv) {
 
 	// we are early into the c++ code; use the occasion to set up cin, cout and cerr substitute streams
 	stream::cin.open(stdin);
@@ -97,26 +96,26 @@ int parseCLI(
 		}
 
 		if (!std::strcmp(argv[i] + prefix_len, arg_screen)) {
-			if (++i == argc || !validate_fullscreen(argv[i], param->image_w, param->image_h, param->image_hz))
+			if (++i == argc || !validate_fullscreen(argv[i], param.image_w, param.image_h, param.image_hz))
 				success = false;
 
 			continue;
 		}
 
 		if (!std::strcmp(argv[i] + prefix_len, arg_frames)) {
-			if (++i == argc || 1 != sscanf(argv[i], "%u", &param->frames))
+			if (++i == argc || 1 != sscanf(argv[i], "%u", &param.frames))
 				success = false;
 
 			continue;
 		}
 
 		if (!std::strcmp(argv[i] + prefix_len, arg_frame_invar_rng)) {
-			param->frame_msk = 0;
+			param.frame_msk = 0;
 			continue;
 		}
 
 		if (!std::strcmp(argv[i] + prefix_len, arg_workgroup_size)) {
-			if (++i == argc || 2 != sscanf(argv[i], "%u %u", &param->group_w, &param->group_h) || param->group_w == 0 || param->group_h == 0)
+			if (++i == argc || 2 != sscanf(argv[i], "%u %u", &param.group_w, &param.group_h) || param.group_w == 0 || param.group_h == 0)
 				success = false;
 
 			continue;
@@ -1278,6 +1277,7 @@ bool ActionCameraLean::frame(
 
 
 cli_param param;
+uint32_t frame_id;
 
 namespace { // anonymous
 
@@ -1357,8 +1357,6 @@ const size_t carb_count = mem_size_carb / sizeof(simd::f32x4);
 uint64_t tlast;
 
 #endif
-uint32_t frame_id;
-
 Array< Timeslice > timeline;
 
 size_t track_cursor;
