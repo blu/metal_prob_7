@@ -1,10 +1,3 @@
-/*
-See the LICENSE.txt file for this sample’s licensing information.
-
-Abstract:
-Application entry point for macOS.
-*/
-
 #import <Cocoa/Cocoa.h>
 #import "AppDelegate.h"
 #import "param.h"

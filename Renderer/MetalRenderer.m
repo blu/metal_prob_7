@@ -1,10 +1,3 @@
-/*
-See the LICENSE.txt file for this sample’s licensing information.
-
-Abstract:
-Implementation of a platform independent renderer class, which performs Metal setup and per frame rendering
-*/
-
 @import MetalKit;
 
 #import "MetalRenderer.h"
@@ -23,7 +16,7 @@ static_assert(n_buffering > 1, "n-buffering must be greater than 1");
 @implementation MetalRenderer
 {
 	id<MTLDevice> _device;
-	id<MTLComputePipelineState> _fnHelloPSO;
+	id<MTLComputePipelineState> _fnMonoPSO;
 	id<MTLCommandQueue> _commandQueue;
 
 	id<MTLBuffer> _src_buffer[n_buffering][buffer_designation_count];
@@ -45,16 +38,16 @@ struct content_init_arg cont_init_arg;
 		_device = device;
 
 		id<MTLLibrary> defaultLibrary = [_device newDefaultLibrary];
-		id<MTLFunction> fnHello = [defaultLibrary newFunctionWithName:@"monokernel"];
+		id<MTLFunction> fnMono = [defaultLibrary newFunctionWithName:@"monokernel"];
 
-		if (fnHello == nil) {
+		if (fnMono == nil) {
 			NSLog(@"error: Failed to find kernel function.");
 			return nil;
 		}
 
-		_fnHelloPSO = [_device newComputePipelineStateWithFunction:fnHello error:&error];
+		_fnMonoPSO = [_device newComputePipelineStateWithFunction:fnMono error:&error];
 
-		if (_fnHelloPSO == nil) {
+		if (_fnMonoPSO == nil) {
 			NSLog(@"error: Failed to created pipeline state object, error %@.", error);
 			return nil;
 		}
@@ -62,7 +55,7 @@ struct content_init_arg cont_init_arg;
 		const unsigned draw_w = param.image_w;
 		const unsigned draw_h = param.image_h;
 		const unsigned drawSize = draw_w * draw_h;
-		const unsigned threadgroupSizeMax = (unsigned) _fnHelloPSO.maxTotalThreadsPerThreadgroup;
+		const unsigned threadgroupSizeMax = (unsigned) _fnMonoPSO.maxTotalThreadsPerThreadgroup;
 
 		unsigned threadgroupSize = param.group_w != -1U ? param.group_w * param.group_h : threadgroupSizeMax;
 		if (threadgroupSize > drawSize) {
@@ -75,7 +68,7 @@ struct content_init_arg cont_init_arg;
 			return nil;
 		}
 
-		unsigned threadgroupWidth = param.group_w != -1U ? param.group_w : (unsigned) _fnHelloPSO.threadExecutionWidth;
+		unsigned threadgroupWidth = param.group_w != -1U ? param.group_w : (unsigned) _fnMonoPSO.threadExecutionWidth;
 		if (threadgroupWidth > draw_w) {
 			threadgroupWidth = draw_w;
 		}
@@ -132,7 +125,7 @@ struct content_init_arg cont_init_arg;
 		frame_arg.buffer[buffer_voxel] = _src_buffer[frame % n_buffering][buffer_voxel].contents;
 		frame_arg.buffer[buffer_carb]  = _src_buffer[frame % n_buffering][buffer_carb].contents;
 
-		if (content_frame(frame_arg))  {
+		if (content_frame(frame_arg)) {
 			[[NSApplication sharedApplication] terminate:nil];
 		}
 
@@ -150,7 +143,7 @@ struct content_init_arg cont_init_arg;
 
 			id<MTLComputeCommandEncoder> computeEncoder = [commandBuffer computeCommandEncoder];
 
-			[computeEncoder setComputePipelineState:_fnHelloPSO];
+			[computeEncoder setComputePipelineState:_fnMonoPSO];
 
 			uint32_t b_idx = 0;
 			uint32_t t_idx = 0;
