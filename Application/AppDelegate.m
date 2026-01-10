@@ -11,8 +11,10 @@
 
 @implementation AppDelegate
 
-- (instancetype) init {
+- (instancetype) init
+{
 	self = [super init];
+
 	if (self) {
 		NSScreen *screen = [NSScreen mainScreen];
 		const size_t retina = screen.backingScaleFactor == 2.f ? 1 : 0;
@@ -23,14 +25,17 @@
 		view.enableSetNeedsDisplay = NO;
 		view.preferredFramesPerSecond = param.image_hz;
 
-		// Make sure any MTLTexture to be used by the view's drawables is not 'framebufferOnly',
-		// and set its texel format as expected by future replaceRegion updates
+		// Ensure any MTLTexture to be used by the view's drawables is not 'framebufferOnly'
+		// in case we output to buffers, and set view texel format as expected by future writes
+#if USE_DST_BUFFER
 		view.framebufferOnly = NO;
+
+#endif
 		view.colorPixelFormat = MTLPixelFormatR8Unorm;
 
 		_renderer = [[MetalRenderer alloc] initWithMTLDevice:view.device];
 
-		// Initialize the renderer with the view size
+		// Largely unnecessary, still confirm the view size with the renderer
 		[_renderer mtkView:view drawableSizeWillChange:view.drawableSize];
 		view.delegate = _renderer;
 

@@ -5,9 +5,9 @@
 
 enum { n_buffering = 16 };
 
-// the larger n-buffering is, the more opportunity we give to the rendering loop
-// to mask frame-pacing issues, i.e. infrequent frame time inconsistencies; this
-// does not help against unmaintainable framerate targets, though, which will
+// the larger n-buffering is, the more opportunity we give to the rendering
+// loop to mask frame-pacing issues like momentary frame-time spikes; this
+// does not help against unachievable framerate targets, though, which will
 // manifest as constant tearing and/or frame glitches, no matter the size of
 // n-buffering
 
@@ -32,6 +32,7 @@ struct content_init_arg cont_init_arg;
 - (nonnull instancetype)initWithMTLDevice:(nonnull id<MTLDevice>)device
 {
 	self = [super init];
+
 	if (self) {
 		NSError* error = nil;
 
