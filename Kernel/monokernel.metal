@@ -59,6 +59,15 @@ u32x8 convert_uint8(u16x8 a)
 		int(a[7]));
 }
 
+short4 convert_short4(int4 a)
+{
+	return short4(
+		short(a[0]),
+		short(a[1]),
+		short(a[2]),
+		short(a[3]));
+}
+
 uint32_t as_uint(float a)
 {
 	return reinterpret_cast< thread uint32_t& >(a);
@@ -102,6 +111,15 @@ int4 islessequal(float4 a, float4 b)
 int isgreaterequal(float a, float b)
 {
 	return a >= b;
+}
+
+ushort4 select(ushort4 a, ushort4 b, short4 c)
+{
+	return ushort4(
+		c[0] ? b[0] : a[0],
+		c[1] ? b[1] : a[1],
+		c[2] ? b[2] : a[2],
+		c[3] ? b[3] : a[3]);
 }
 
 int4 select(int4 a, int4 b, int4 c)
@@ -194,7 +212,7 @@ struct Voxel {
 
 struct ChildIndex {
 	f32x8 distance;
-	u32x8 index;
+	u16x8 index;
 };
 
 inline float intersect(
@@ -330,66 +348,66 @@ uint octlf_intersect_wide(
 
 	const float4 r0_A = float4(t[0], t[3], t[4], t[7]);
 	const float4 r0_B = float4(t[1], t[2], t[5], t[6]);
-	const int4 r0x_A = int4(0, 3, 4, 7);
-	const int4 r0x_B = int4(1, 2, 5, 6);
-	const int4 m0 = islessequal(r0_A, r0_B);
+	const ushort4 r0x_A = ushort4(0, 3, 4, 7);
+	const ushort4 r0x_B = ushort4(1, 2, 5, 6);
+	const short4 m0 = convert_short4(islessequal(r0_A, r0_B));
 	const float4 r0_min = fmin(r0_A, r0_B);
 	const float4 r0_max = fmax(r0_A, r0_B);
-	const int4 r0x_min = select(r0x_B, r0x_A, m0);
-	const int4 r0x_max = select(r0x_A, r0x_B, m0);
+	const ushort4 r0x_min = select(r0x_B, r0x_A, m0);
+	const ushort4 r0x_max = select(r0x_A, r0x_B, m0);
 
 	const float4 r1_A = float4(r0_min[0], r0_max[0], r0_max[3], r0_min[3]);
 	const float4 r1_B = float4(r0_max[1], r0_min[1], r0_min[2], r0_max[2]);
-	const int4 r1x_A = int4(r0x_min[0], r0x_max[0], r0x_max[3], r0x_min[3]);
-	const int4 r1x_B = int4(r0x_max[1], r0x_min[1], r0x_min[2], r0x_max[2]);
-	const int4 m1 = islessequal(r1_A, r1_B);
+	const ushort4 r1x_A = ushort4(r0x_min[0], r0x_max[0], r0x_max[3], r0x_min[3]);
+	const ushort4 r1x_B = ushort4(r0x_max[1], r0x_min[1], r0x_min[2], r0x_max[2]);
+	const short4 m1 = convert_short4(islessequal(r1_A, r1_B));
 	const float4 r1_min = fmin(r1_A, r1_B);
 	const float4 r1_max = fmax(r1_A, r1_B);
-	const int4 r1x_min = select(r1x_B, r1x_A, m1);
-	const int4 r1x_max = select(r1x_A, r1x_B, m1);
+	const ushort4 r1x_min = select(r1x_B, r1x_A, m1);
+	const ushort4 r1x_max = select(r1x_A, r1x_B, m1);
 
 	const float4 r2_A = float4(r1_min[0], r1_max[0], r1_max[3], r1_min[3]);
 	const float4 r2_B = float4(r1_min[1], r1_max[1], r1_max[2], r1_min[2]);
-	const int4 r2x_A = int4(r1x_min[0], r1x_max[0], r1x_max[3], r1x_min[3]);
-	const int4 r2x_B = int4(r1x_min[1], r1x_max[1], r1x_max[2], r1x_min[2]);
-	const int4 m2 = islessequal(r2_A, r2_B);
+	const ushort4 r2x_A = ushort4(r1x_min[0], r1x_max[0], r1x_max[3], r1x_min[3]);
+	const ushort4 r2x_B = ushort4(r1x_min[1], r1x_max[1], r1x_max[2], r1x_min[2]);
+	const short4 m2 = convert_short4(islessequal(r2_A, r2_B));
 	const float4 r2_min = fmin(r2_A, r2_B);
 	const float4 r2_max = fmax(r2_A, r2_B);
-	const int4 r2x_min = select(r2x_B, r2x_A, m2);
-	const int4 r2x_max = select(r2x_A, r2x_B, m2);
+	const ushort4 r2x_min = select(r2x_B, r2x_A, m2);
+	const ushort4 r2x_max = select(r2x_A, r2x_B, m2);
 
 	const float4 r3_A = float4(r2_min[0], r2_max[0], r2_min[1], r2_max[1]);
 	const float4 r3_B = float4(r2_max[2], r2_min[2], r2_max[3], r2_min[3]);
-	const int4 r3x_A = int4(r2x_min[0], r2x_max[0], r2x_min[1], r2x_max[1]);
-	const int4 r3x_B = int4(r2x_max[2], r2x_min[2], r2x_max[3], r2x_min[3]);
-	const int4 m3 = islessequal(r3_A, r3_B);
+	const ushort4 r3x_A = ushort4(r2x_min[0], r2x_max[0], r2x_min[1], r2x_max[1]);
+	const ushort4 r3x_B = ushort4(r2x_max[2], r2x_min[2], r2x_max[3], r2x_min[3]);
+	const short4 m3 = convert_short4(islessequal(r3_A, r3_B));
 	const float4 r3_min = fmin(r3_A, r3_B);
 	const float4 r3_max = fmax(r3_A, r3_B);
-	const int4 r3x_min = select(r3x_B, r3x_A, m3);
-	const int4 r3x_max = select(r3x_A, r3x_B, m3);
+	const ushort4 r3x_min = select(r3x_B, r3x_A, m3);
+	const ushort4 r3x_max = select(r3x_A, r3x_B, m3);
 
 	const float4 r4_A = float4(r3_min[0], r3_min[1], r3_max[0], r3_max[1]);
 	const float4 r4_B = float4(r3_min[2], r3_min[3], r3_max[2], r3_max[3]);
-	const int4 r4x_A = int4(r3x_min[0], r3x_min[1], r3x_max[0], r3x_max[1]);
-	const int4 r4x_B = int4(r3x_min[2], r3x_min[3], r3x_max[2], r3x_max[3]);
-	const int4 m4 = islessequal(r4_A, r4_B);
+	const ushort4 r4x_A = ushort4(r3x_min[0], r3x_min[1], r3x_max[0], r3x_max[1]);
+	const ushort4 r4x_B = ushort4(r3x_min[2], r3x_min[3], r3x_max[2], r3x_max[3]);
+	const short4 m4 = convert_short4(islessequal(r4_A, r4_B));
 	const float4 r4_min = fmin(r4_A, r4_B);
 	const float4 r4_max = fmax(r4_A, r4_B);
-	const int4 r4x_min = select(r4x_B, r4x_A, m4);
-	const int4 r4x_max = select(r4x_A, r4x_B, m4);
+	const ushort4 r4x_min = select(r4x_B, r4x_A, m4);
+	const ushort4 r4x_max = select(r4x_A, r4x_B, m4);
 
 	const float4 r5_A = float4(r4_min[0], r4_max[0], r4_min[2], r4_max[2]);
 	const float4 r5_B = float4(r4_min[1], r4_max[1], r4_min[3], r4_max[3]);
-	const int4 r5x_A = int4(r4x_min[0], r4x_max[0], r4x_min[2], r4x_max[2]);
-	const int4 r5x_B = int4(r4x_min[1], r4x_max[1], r4x_min[3], r4x_max[3]);
-	const int4 m5 = islessequal(r5_A, r5_B);
+	const ushort4 r5x_A = ushort4(r4x_min[0], r4x_max[0], r4x_min[2], r4x_max[2]);
+	const ushort4 r5x_B = ushort4(r4x_min[1], r4x_max[1], r4x_min[3], r4x_max[3]);
+	const short4 m5 = convert_short4(islessequal(r5_A, r5_B));
 	const float4 r5_min = fmin(r5_A, r5_B);
 	const float4 r5_max = fmax(r5_A, r5_B);
-	const int4 r5x_min = select(r5x_B, r5x_A, m5);
-	const int4 r5x_max = select(r5x_A, r5x_B, m5);
+	const ushort4 r5x_min = select(r5x_B, r5x_A, m5);
+	const ushort4 r5x_max = select(r5x_A, r5x_B, m5);
 
 	child_index->distance = f32x8(r5_min[0], r5_max[0], r5_min[1], r5_max[1], r5_min[2], r5_max[2], r5_min[3], r5_max[3]);
-	child_index->index = u32x8(r5x_min[0], r5x_max[0], r5x_min[1], r5x_max[1], r5x_min[2], r5x_max[2], r5x_min[3], r5x_max[3]);
+	child_index->index = u16x8(r5x_min[0], r5x_max[0], r5x_min[1], r5x_max[1], r5x_min[2], r5x_max[2], r5x_min[3], r5x_max[3]);
 	return uint(count);
 }
 
@@ -448,66 +466,66 @@ uint octet_intersect_wide(
 
 	const float4 r0_A = float4(t[0], t[3], t[4], t[7]);
 	const float4 r0_B = float4(t[1], t[2], t[5], t[6]);
-	const int4 r0x_A = int4(0, 3, 4, 7);
-	const int4 r0x_B = int4(1, 2, 5, 6);
-	const int4 m0 = islessequal(r0_A, r0_B);
+	const ushort4 r0x_A = ushort4(0, 3, 4, 7);
+	const ushort4 r0x_B = ushort4(1, 2, 5, 6);
+	const short4 m0 = convert_short4(islessequal(r0_A, r0_B));
 	const float4 r0_min = fmin(r0_A, r0_B);
 	const float4 r0_max = fmax(r0_A, r0_B);
-	const int4 r0x_min = select(r0x_B, r0x_A, m0);
-	const int4 r0x_max = select(r0x_A, r0x_B, m0);
+	const ushort4 r0x_min = select(r0x_B, r0x_A, m0);
+	const ushort4 r0x_max = select(r0x_A, r0x_B, m0);
 
 	const float4 r1_A = float4(r0_min[0], r0_max[0], r0_max[3], r0_min[3]);
 	const float4 r1_B = float4(r0_max[1], r0_min[1], r0_min[2], r0_max[2]);
-	const int4 r1x_A = int4(r0x_min[0], r0x_max[0], r0x_max[3], r0x_min[3]);
-	const int4 r1x_B = int4(r0x_max[1], r0x_min[1], r0x_min[2], r0x_max[2]);
-	const int4 m1 = islessequal(r1_A, r1_B);
+	const ushort4 r1x_A = ushort4(r0x_min[0], r0x_max[0], r0x_max[3], r0x_min[3]);
+	const ushort4 r1x_B = ushort4(r0x_max[1], r0x_min[1], r0x_min[2], r0x_max[2]);
+	const short4 m1 = convert_short4(islessequal(r1_A, r1_B));
 	const float4 r1_min = fmin(r1_A, r1_B);
 	const float4 r1_max = fmax(r1_A, r1_B);
-	const int4 r1x_min = select(r1x_B, r1x_A, m1);
-	const int4 r1x_max = select(r1x_A, r1x_B, m1);
+	const ushort4 r1x_min = select(r1x_B, r1x_A, m1);
+	const ushort4 r1x_max = select(r1x_A, r1x_B, m1);
 
 	const float4 r2_A = float4(r1_min[0], r1_max[0], r1_max[3], r1_min[3]);
 	const float4 r2_B = float4(r1_min[1], r1_max[1], r1_max[2], r1_min[2]);
-	const int4 r2x_A = int4(r1x_min[0], r1x_max[0], r1x_max[3], r1x_min[3]);
-	const int4 r2x_B = int4(r1x_min[1], r1x_max[1], r1x_max[2], r1x_min[2]);
-	const int4 m2 = islessequal(r2_A, r2_B);
+	const ushort4 r2x_A = ushort4(r1x_min[0], r1x_max[0], r1x_max[3], r1x_min[3]);
+	const ushort4 r2x_B = ushort4(r1x_min[1], r1x_max[1], r1x_max[2], r1x_min[2]);
+	const short4 m2 = convert_short4(islessequal(r2_A, r2_B));
 	const float4 r2_min = fmin(r2_A, r2_B);
 	const float4 r2_max = fmax(r2_A, r2_B);
-	const int4 r2x_min = select(r2x_B, r2x_A, m2);
-	const int4 r2x_max = select(r2x_A, r2x_B, m2);
+	const ushort4 r2x_min = select(r2x_B, r2x_A, m2);
+	const ushort4 r2x_max = select(r2x_A, r2x_B, m2);
 
 	const float4 r3_A = float4(r2_min[0], r2_max[0], r2_min[1], r2_max[1]);
 	const float4 r3_B = float4(r2_max[2], r2_min[2], r2_max[3], r2_min[3]);
-	const int4 r3x_A = int4(r2x_min[0], r2x_max[0], r2x_min[1], r2x_max[1]);
-	const int4 r3x_B = int4(r2x_max[2], r2x_min[2], r2x_max[3], r2x_min[3]);
-	const int4 m3 = islessequal(r3_A, r3_B);
+	const ushort4 r3x_A = ushort4(r2x_min[0], r2x_max[0], r2x_min[1], r2x_max[1]);
+	const ushort4 r3x_B = ushort4(r2x_max[2], r2x_min[2], r2x_max[3], r2x_min[3]);
+	const short4 m3 = convert_short4(islessequal(r3_A, r3_B));
 	const float4 r3_min = fmin(r3_A, r3_B);
 	const float4 r3_max = fmax(r3_A, r3_B);
-	const int4 r3x_min = select(r3x_B, r3x_A, m3);
-	const int4 r3x_max = select(r3x_A, r3x_B, m3);
+	const ushort4 r3x_min = select(r3x_B, r3x_A, m3);
+	const ushort4 r3x_max = select(r3x_A, r3x_B, m3);
 
 	const float4 r4_A = float4(r3_min[0], r3_min[1], r3_max[0], r3_max[1]);
 	const float4 r4_B = float4(r3_min[2], r3_min[3], r3_max[2], r3_max[3]);
-	const int4 r4x_A = int4(r3x_min[0], r3x_min[1], r3x_max[0], r3x_max[1]);
-	const int4 r4x_B = int4(r3x_min[2], r3x_min[3], r3x_max[2], r3x_max[3]);
-	const int4 m4 = islessequal(r4_A, r4_B);
+	const ushort4 r4x_A = ushort4(r3x_min[0], r3x_min[1], r3x_max[0], r3x_max[1]);
+	const ushort4 r4x_B = ushort4(r3x_min[2], r3x_min[3], r3x_max[2], r3x_max[3]);
+	const short4 m4 = convert_short4(islessequal(r4_A, r4_B));
 	const float4 r4_min = fmin(r4_A, r4_B);
 	const float4 r4_max = fmax(r4_A, r4_B);
-	const int4 r4x_min = select(r4x_B, r4x_A, m4);
-	const int4 r4x_max = select(r4x_A, r4x_B, m4);
+	const ushort4 r4x_min = select(r4x_B, r4x_A, m4);
+	const ushort4 r4x_max = select(r4x_A, r4x_B, m4);
 
 	const float4 r5_A = float4(r4_min[0], r4_max[0], r4_min[2], r4_max[2]);
 	const float4 r5_B = float4(r4_min[1], r4_max[1], r4_min[3], r4_max[3]);
-	const int4 r5x_A = int4(r4x_min[0], r4x_max[0], r4x_min[2], r4x_max[2]);
-	const int4 r5x_B = int4(r4x_min[1], r4x_max[1], r4x_min[3], r4x_max[3]);
-	const int4 m5 = islessequal(r5_A, r5_B);
+	const ushort4 r5x_A = ushort4(r4x_min[0], r4x_max[0], r4x_min[2], r4x_max[2]);
+	const ushort4 r5x_B = ushort4(r4x_min[1], r4x_max[1], r4x_min[3], r4x_max[3]);
+	const short4 m5 = convert_short4(islessequal(r5_A, r5_B));
 	const float4 r5_min = fmin(r5_A, r5_B);
 	const float4 r5_max = fmax(r5_A, r5_B);
-	const int4 r5x_min = select(r5x_B, r5x_A, m5);
-	const int4 r5x_max = select(r5x_A, r5x_B, m5);
+	const ushort4 r5x_min = select(r5x_B, r5x_A, m5);
+	const ushort4 r5x_max = select(r5x_A, r5x_B, m5);
 
 	child_index->distance = f32x8(r5_min[0], r5_max[0], r5_min[1], r5_max[1], r5_min[2], r5_max[2], r5_min[3], r5_max[3]);
-	child_index->index = u32x8(r5x_min[0], r5x_max[0], r5x_min[1], r5x_max[1], r5x_min[2], r5x_max[2], r5x_min[3], r5x_max[3]);
+	child_index->index = u16x8(r5x_min[0], r5x_max[0], r5x_min[1], r5x_max[1], r5x_min[2], r5x_max[2], r5x_min[3], r5x_max[3]);
 	return uint(count);
 }
 
@@ -565,27 +583,27 @@ uint traverself(
 {
 	struct ChildIndex child_index;
 
-	const uint hit_count = octlf_intersect_wide(
+	const ushort hit_count = octlf_intersect_wide(
 		leaf,
 		bbox,
 		ray,
 		&child_index);
 
 	const f32x8 distance = child_index.distance;
-	const u32x8 index = child_index.index;
-	const u32x8 leaf_start = convert_uint8(leaf.start);
-	const u32x8 leaf_count = convert_uint8(leaf.count);
+	const u16x8 index = child_index.index;
+	const u16x8 leaf_start = leaf.start;
+	const u16x8 leaf_count = leaf.count;
 	const uint prior_id = as_uint(ray->origin.w);
 
-	for (uint i = 0; i < hit_count; ++i) {
-		const uint payload_start = leaf_start[index[i]];
-		const uint payload_count = leaf_count[index[i]];
+	for (ushort i = 0; i < hit_count; ++i) {
+		const ushort payload_start = leaf_start[index[i]];
+		const ushort payload_count = leaf_count[index[i]];
 		float nearest_dist = distance[i];
 
 		uint voxel_id = -1U;
 		struct Hit maybe_hit;
 
-		for (uint j = payload_start; j < payload_start + payload_count; ++j) {
+		for (ushort j = payload_start; j < payload_start + payload_count; ++j) {
 			const struct Voxel payload = get_voxel(voxel, j);
 			const struct BBox payload_bbox = { payload.min.xyz, payload.max.xyz };
 			const uint id = as_uint(payload.min.w);
@@ -614,22 +632,22 @@ bool occludelf(
 {
 	struct ChildIndex child_index;
 
-	const uint hit_count = octlf_intersect_wide(
+	const ushort hit_count = octlf_intersect_wide(
 		leaf,
 		bbox,
 		ray,
 		&child_index);
 
-	const u32x8 index = child_index.index;
-	const u32x8 leaf_start = convert_uint8(leaf.start);
-	const u32x8 leaf_count = convert_uint8(leaf.count);
+	const u16x8 index = child_index.index;
+	const u16x8 leaf_start = leaf.start;
+	const u16x8 leaf_count = leaf.count;
 	const uint prior_id = as_uint(ray->origin.w);
 
-	for (uint i = 0; i < hit_count; ++i) {
-		const uint payload_start = leaf_start[index[i]];
-		const uint payload_count = leaf_count[index[i]];
+	for (ushort i = 0; i < hit_count; ++i) {
+		const ushort payload_start = leaf_start[index[i]];
+		const ushort payload_count = leaf_count[index[i]];
 
-		for (uint j = payload_start; j < payload_start + payload_count; ++j) {
+		for (ushort j = payload_start; j < payload_start + payload_count; ++j) {
 			const struct Voxel payload = get_voxel(voxel, j);
 			const struct BBox payload_bbox = { payload.min.xyz, payload.max.xyz };
 			const uint id = as_uint(payload.min.w);
@@ -652,17 +670,17 @@ uint traverse(
 	struct ChildIndex child_index;
 	struct BBox child_bbox[8];
 
-	const uint hit_count = octet_intersect_wide(
+	const ushort hit_count = octet_intersect_wide(
 		octet,
 		bbox,
 		ray,
 		&child_index,
 		child_bbox);
 
-	const u32x8 index = child_index.index;
-	const u32x8 octet_child = convert_uint8(octet.child);
+	const u16x8 index = child_index.index;
+	const u16x8 octet_child = octet.child;
 
-	for (uint i = 0; i < hit_count; ++i) {
+	for (ushort i = 0; i < hit_count; ++i) {
 		const uint child = octet_child[index[i]];
 		const uint hitId = traverself(get_leaf(leaf, child), voxel, child_bbox + index[i], ray, hit);
 
@@ -682,17 +700,17 @@ bool occlude(
 	struct ChildIndex child_index;
 	struct BBox child_bbox[8];
 
-	const uint hit_count = octet_intersect_wide(
+	const ushort hit_count = octet_intersect_wide(
 		octet,
 		bbox,
 		ray,
 		&child_index,
 		child_bbox);
 
-	const u32x8 index = child_index.index;
-	const u32x8 octet_child = convert_uint8(octet.child);
+	const u16x8 index = child_index.index;
+	const u16x8 octet_child = octet.child;
 
-	for (uint i = 0; i < hit_count; ++i) {
+	for (ushort i = 0; i < hit_count; ++i) {
 		const uint child = octet_child[index[i]];
 
 		if (occludelf(get_leaf(leaf, child), voxel, child_bbox + index[i], ray))
