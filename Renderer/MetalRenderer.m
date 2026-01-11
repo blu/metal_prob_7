@@ -77,13 +77,13 @@ struct content_init_arg cont_init_arg;
 		param.group_w = threadgroupWidth;
 		param.group_h = threadgroupSize / threadgroupWidth;
 
+		NSLog(@"grid size (%u, %u), group size (%u, %u)", param.image_w, param.image_h, param.group_w, param.group_h);
+
 		if (draw_w % param.group_w || draw_h % param.group_h) {
-			NSLog(@"error: grid size not a multiple of group size (%u, %u)", param.group_w, param.group_h);
+			NSLog(@"error: grid size not a multiple of group size");
 			[[NSApplication sharedApplication] terminate:nil];
 			return nil;
 		}
-
-		NSLog(@"grid size (%u, %u), group size (%u, %u)", param.image_w, param.image_h, param.group_w, param.group_h);
 
 		_commandQueue = [_device newCommandQueue];
 
