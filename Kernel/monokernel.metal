@@ -326,13 +326,6 @@ uint octlf_intersect_wide(
 	const s32x8 occupancy = convert_int8(u16x8(0) != octet.count);
 	r &= occupancy;
 
-#if OCL_QUIRK_0004
-	const s32x8 cnt0 = -r;
-	const int4 cnt1 = int4(cnt0[0], cnt0[1], cnt0[2], cnt0[3]) + int4(cnt0[4], cnt0[5], cnt0[6], cnt0[7]);
-	const int2 cnt2 = int2(cnt1[0], cnt1[1]) + int2(cnt1[2], cnt1[3]);
-	const int count = cnt2[0] + cnt2[1];
-
-#else
 	int count = 0;
 	count -= r[0];
 	count -= r[1];
@@ -343,7 +336,6 @@ uint octlf_intersect_wide(
 	count -= r[6];
 	count -= r[7];
 
-#endif
 	t = select(f32x8(INFINITY), t, r);
 
 	const float4 r0_A = float4(t[0], t[3], t[4], t[7]);
@@ -444,13 +436,6 @@ uint octet_intersect_wide(
 	const s32x8 occupancy = convert_int8(u16x8(-1) != octet.child);
 	r &= occupancy;
 
-#if OCL_QUIRK_0004
-	const s32x8 cnt0 = -r;
-	const int4 cnt1 = int4(cnt0[0], cnt0[1], cnt0[2], cnt0[3]) + int4(cnt0[4], cnt0[5], cnt0[6], cnt0[7]);
-	const int2 cnt2 = int2(cnt1[0], cnt1[1]) + int2(cnt1[2], cnt1[3]);
-	const int count = cnt2[0] + cnt2[1];
-
-#else
 	int count = 0;
 	count -= r[0];
 	count -= r[1];
@@ -461,7 +446,6 @@ uint octet_intersect_wide(
 	count -= r[6];
 	count -= r[7];
 
-#endif
 	t = select(f32x8(INFINITY), t, r);
 
 	const float4 r0_A = float4(t[0], t[3], t[4], t[7]);
