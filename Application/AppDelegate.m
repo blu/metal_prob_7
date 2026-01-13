@@ -40,7 +40,7 @@
 		view.delegate = _renderer;
 
 		NSWindow *window = [[NSWindow alloc] initWithContentRect:rect
-													   styleMask:NSWindowStyleMaskTitled
+													   styleMask:NSWindowStyleMaskBorderless
 														 backing:NSBackingStoreBuffered
 														   defer:NO
 														  screen:screen];
