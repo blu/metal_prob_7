@@ -46,6 +46,32 @@ s32x8 convert_int8(b8 a)
 		int(a[7]));
 }
 
+s16x8 convert_short8(b8 a)
+{
+	return -s16x8(
+		short(a[0]),
+		short(a[1]),
+		short(a[2]),
+		short(a[3]),
+		short(a[4]),
+		short(a[5]),
+		short(a[6]),
+		short(a[7]));
+}
+
+s16x8 convert_short8(s32x8 a)
+{
+	return s16x8(
+		short(a[0]),
+		short(a[1]),
+		short(a[2]),
+		short(a[3]),
+		short(a[4]),
+		short(a[5]),
+		short(a[6]),
+		short(a[7]));
+}
+
 u32x8 convert_uint8(u16x8 a)
 {
 	return u32x8(
@@ -88,14 +114,14 @@ float3 as_float3(int3 a)
 	return reinterpret_cast< thread float3& >(a);
 }
 
-int isless(float a, float b)
+bool isless(float a, float b)
 {
 	return a < b;
 }
 
-s32x8 isless(f32x8 a, f32x8 b)
+b8 isless(f32x8 a, f32x8 b)
 {
-	return convert_int8(a < b);
+	return a < b;
 }
 
 int3 islessequal(float3 a, float3 b)
@@ -103,9 +129,9 @@ int3 islessequal(float3 a, float3 b)
 	return convert_int3(a <= b);
 }
 
-int4 islessequal(float4 a, float4 b)
+b4 islessequal(float4 a, float4 b)
 {
-	return convert_int4(a <= b);
+	return a <= b;
 }
 
 int isgreaterequal(float a, float b)
@@ -140,6 +166,22 @@ float3 select(float3 a, float3 b, uint3 c)
 }
 
 f32x8 select(f32x8 a, f32x8 b, s32x8 c)
+{
+	return f32x8(
+		c[0] ? b[0] : a[0],
+		c[1] ? b[1] : a[1],
+		c[2] ? b[2] : a[2],
+		c[3] ? b[3] : a[3],
+		c[4] ? b[4] : a[4],
+		c[5] ? b[5] : a[5],
+		c[6] ? b[6] : a[6],
+		c[7] ? b[7] : a[7]);
+}
+
+// next select is illegal in OCL due to its
+// mask size mismatching its a/b type size,
+// but it saves us a s16x8 -> s32x8 cast
+f32x8 select(f32x8 a, f32x8 b, s16x8 c)
 {
 	return f32x8(
 		c[0] ? b[0] : a[0],
@@ -271,7 +313,7 @@ inline void intersect8(
 	const f32x8 bbox_max_z,
 	thread const struct Ray* const ray,
 	thread f32x8* const t,
-	thread s32x8* const r)
+	thread s16x8* const r)
 {
 	const float3 ray_origin = ray->origin.xyz;
 	const float3 ray_rcpdir = ray->rcpdir.xyz;
@@ -296,14 +338,14 @@ inline void intersect8(
 	*t = max;
 
 #if INFINITE_RAY
-	const s32x8 msk = isless(min, max) & isless(f32x8(0.f), max);
+	const s16x8 msk = convert_short8(isless(min, max) & isless(f32x8(0.f), max));
 #else
-	const s32x8 msk = isless(min, max) & isless(f32x8(0.f), max) & isless(min, f32x8(ray_len));
+	const s16x8 msk = convert_short8(isless(min, max) & isless(f32x8(0.f), max) & isless(min, f32x8(ray_len)));
 #endif
 	*r = msk;
 }
 
-uint octlf_intersect_wide(
+ushort octlf_intersect_wide(
 	thread const struct Leaf octet,
 	thread const struct BBox* const bbox,
 	thread const struct Ray* const ray,
@@ -321,12 +363,12 @@ uint octlf_intersect_wide(
 	const f32x8 bbox_max_z = f32x8( par_mid.zzzz, par_max.zzzz );
 
 	f32x8 t;
-	s32x8 r;
+	s16x8 r;
 	intersect8(bbox_min_x, bbox_min_y, bbox_min_z, bbox_max_x, bbox_max_y, bbox_max_z, ray, &t, &r);
-	const s32x8 occupancy = convert_int8(u16x8(0) != octet.count);
+	const s16x8 occupancy = convert_short8(u16x8(0) != octet.count);
 	r &= occupancy;
 
-	int count = 0;
+	short count = 0;
 	count -= r[0];
 	count -= r[1];
 	count -= r[2];
@@ -342,7 +384,7 @@ uint octlf_intersect_wide(
 	const float4 r0_B = float4(t[1], t[2], t[5], t[6]);
 	const ushort4 r0x_A = ushort4(0, 3, 4, 7);
 	const ushort4 r0x_B = ushort4(1, 2, 5, 6);
-	const short4 m0 = convert_short4(islessequal(r0_A, r0_B));
+	const b4 m0 = islessequal(r0_A, r0_B);
 	const float4 r0_min = fmin(r0_A, r0_B);
 	const float4 r0_max = fmax(r0_A, r0_B);
 	const ushort4 r0x_min = select(r0x_B, r0x_A, m0);
@@ -352,7 +394,7 @@ uint octlf_intersect_wide(
 	const float4 r1_B = float4(r0_max[1], r0_min[1], r0_min[2], r0_max[2]);
 	const ushort4 r1x_A = ushort4(r0x_min[0], r0x_max[0], r0x_max[3], r0x_min[3]);
 	const ushort4 r1x_B = ushort4(r0x_max[1], r0x_min[1], r0x_min[2], r0x_max[2]);
-	const short4 m1 = convert_short4(islessequal(r1_A, r1_B));
+	const b4 m1 = islessequal(r1_A, r1_B);
 	const float4 r1_min = fmin(r1_A, r1_B);
 	const float4 r1_max = fmax(r1_A, r1_B);
 	const ushort4 r1x_min = select(r1x_B, r1x_A, m1);
@@ -362,7 +404,7 @@ uint octlf_intersect_wide(
 	const float4 r2_B = float4(r1_min[1], r1_max[1], r1_max[2], r1_min[2]);
 	const ushort4 r2x_A = ushort4(r1x_min[0], r1x_max[0], r1x_max[3], r1x_min[3]);
 	const ushort4 r2x_B = ushort4(r1x_min[1], r1x_max[1], r1x_max[2], r1x_min[2]);
-	const short4 m2 = convert_short4(islessequal(r2_A, r2_B));
+	const b4 m2 = islessequal(r2_A, r2_B);
 	const float4 r2_min = fmin(r2_A, r2_B);
 	const float4 r2_max = fmax(r2_A, r2_B);
 	const ushort4 r2x_min = select(r2x_B, r2x_A, m2);
@@ -372,7 +414,7 @@ uint octlf_intersect_wide(
 	const float4 r3_B = float4(r2_max[2], r2_min[2], r2_max[3], r2_min[3]);
 	const ushort4 r3x_A = ushort4(r2x_min[0], r2x_max[0], r2x_min[1], r2x_max[1]);
 	const ushort4 r3x_B = ushort4(r2x_max[2], r2x_min[2], r2x_max[3], r2x_min[3]);
-	const short4 m3 = convert_short4(islessequal(r3_A, r3_B));
+	const b4 m3 = islessequal(r3_A, r3_B);
 	const float4 r3_min = fmin(r3_A, r3_B);
 	const float4 r3_max = fmax(r3_A, r3_B);
 	const ushort4 r3x_min = select(r3x_B, r3x_A, m3);
@@ -382,7 +424,7 @@ uint octlf_intersect_wide(
 	const float4 r4_B = float4(r3_min[2], r3_min[3], r3_max[2], r3_max[3]);
 	const ushort4 r4x_A = ushort4(r3x_min[0], r3x_min[1], r3x_max[0], r3x_max[1]);
 	const ushort4 r4x_B = ushort4(r3x_min[2], r3x_min[3], r3x_max[2], r3x_max[3]);
-	const short4 m4 = convert_short4(islessequal(r4_A, r4_B));
+	const b4 m4 = islessequal(r4_A, r4_B);
 	const float4 r4_min = fmin(r4_A, r4_B);
 	const float4 r4_max = fmax(r4_A, r4_B);
 	const ushort4 r4x_min = select(r4x_B, r4x_A, m4);
@@ -392,7 +434,7 @@ uint octlf_intersect_wide(
 	const float4 r5_B = float4(r4_min[1], r4_max[1], r4_min[3], r4_max[3]);
 	const ushort4 r5x_A = ushort4(r4x_min[0], r4x_max[0], r4x_min[2], r4x_max[2]);
 	const ushort4 r5x_B = ushort4(r4x_min[1], r4x_max[1], r4x_min[3], r4x_max[3]);
-	const short4 m5 = convert_short4(islessequal(r5_A, r5_B));
+	const b4 m5 = islessequal(r5_A, r5_B);
 	const float4 r5_min = fmin(r5_A, r5_B);
 	const float4 r5_max = fmax(r5_A, r5_B);
 	const ushort4 r5x_min = select(r5x_B, r5x_A, m5);
@@ -400,10 +442,10 @@ uint octlf_intersect_wide(
 
 	child_index->distance = f32x8(r5_min[0], r5_max[0], r5_min[1], r5_max[1], r5_min[2], r5_max[2], r5_min[3], r5_max[3]);
 	child_index->index = u16x8(r5x_min[0], r5x_max[0], r5x_min[1], r5x_max[1], r5x_min[2], r5x_max[2], r5x_min[3], r5x_max[3]);
-	return uint(count);
+	return ushort(count);
 }
 
-uint octet_intersect_wide(
+ushort octet_intersect_wide(
 	const struct Octet octet,
 	thread const struct BBox* const bbox,
 	thread const struct Ray* const ray,
@@ -431,12 +473,12 @@ uint octet_intersect_wide(
 	child_bbox[7] = (struct BBox){ float3( bbox_min_x[7], bbox_min_y[7], bbox_min_z[7] ), float3( bbox_max_x[7], bbox_max_y[7], bbox_max_z[7] ) };
 
 	f32x8 t;
-	s32x8 r;
+	s16x8 r;
 	intersect8(bbox_min_x, bbox_min_y, bbox_min_z, bbox_max_x, bbox_max_y, bbox_max_z, ray, &t, &r);
-	const s32x8 occupancy = convert_int8(u16x8(-1) != octet.child);
+	const s16x8 occupancy = convert_short8(u16x8(-1) != octet.child);
 	r &= occupancy;
 
-	int count = 0;
+	short count = 0;
 	count -= r[0];
 	count -= r[1];
 	count -= r[2];
@@ -452,7 +494,7 @@ uint octet_intersect_wide(
 	const float4 r0_B = float4(t[1], t[2], t[5], t[6]);
 	const ushort4 r0x_A = ushort4(0, 3, 4, 7);
 	const ushort4 r0x_B = ushort4(1, 2, 5, 6);
-	const short4 m0 = convert_short4(islessequal(r0_A, r0_B));
+	const b4 m0 = islessequal(r0_A, r0_B);
 	const float4 r0_min = fmin(r0_A, r0_B);
 	const float4 r0_max = fmax(r0_A, r0_B);
 	const ushort4 r0x_min = select(r0x_B, r0x_A, m0);
@@ -462,7 +504,7 @@ uint octet_intersect_wide(
 	const float4 r1_B = float4(r0_max[1], r0_min[1], r0_min[2], r0_max[2]);
 	const ushort4 r1x_A = ushort4(r0x_min[0], r0x_max[0], r0x_max[3], r0x_min[3]);
 	const ushort4 r1x_B = ushort4(r0x_max[1], r0x_min[1], r0x_min[2], r0x_max[2]);
-	const short4 m1 = convert_short4(islessequal(r1_A, r1_B));
+	const b4 m1 = islessequal(r1_A, r1_B);
 	const float4 r1_min = fmin(r1_A, r1_B);
 	const float4 r1_max = fmax(r1_A, r1_B);
 	const ushort4 r1x_min = select(r1x_B, r1x_A, m1);
@@ -472,7 +514,7 @@ uint octet_intersect_wide(
 	const float4 r2_B = float4(r1_min[1], r1_max[1], r1_max[2], r1_min[2]);
 	const ushort4 r2x_A = ushort4(r1x_min[0], r1x_max[0], r1x_max[3], r1x_min[3]);
 	const ushort4 r2x_B = ushort4(r1x_min[1], r1x_max[1], r1x_max[2], r1x_min[2]);
-	const short4 m2 = convert_short4(islessequal(r2_A, r2_B));
+	const b4 m2 = islessequal(r2_A, r2_B);
 	const float4 r2_min = fmin(r2_A, r2_B);
 	const float4 r2_max = fmax(r2_A, r2_B);
 	const ushort4 r2x_min = select(r2x_B, r2x_A, m2);
@@ -482,7 +524,7 @@ uint octet_intersect_wide(
 	const float4 r3_B = float4(r2_max[2], r2_min[2], r2_max[3], r2_min[3]);
 	const ushort4 r3x_A = ushort4(r2x_min[0], r2x_max[0], r2x_min[1], r2x_max[1]);
 	const ushort4 r3x_B = ushort4(r2x_max[2], r2x_min[2], r2x_max[3], r2x_min[3]);
-	const short4 m3 = convert_short4(islessequal(r3_A, r3_B));
+	const b4 m3 = islessequal(r3_A, r3_B);
 	const float4 r3_min = fmin(r3_A, r3_B);
 	const float4 r3_max = fmax(r3_A, r3_B);
 	const ushort4 r3x_min = select(r3x_B, r3x_A, m3);
@@ -492,7 +534,7 @@ uint octet_intersect_wide(
 	const float4 r4_B = float4(r3_min[2], r3_min[3], r3_max[2], r3_max[3]);
 	const ushort4 r4x_A = ushort4(r3x_min[0], r3x_min[1], r3x_max[0], r3x_max[1]);
 	const ushort4 r4x_B = ushort4(r3x_min[2], r3x_min[3], r3x_max[2], r3x_max[3]);
-	const short4 m4 = convert_short4(islessequal(r4_A, r4_B));
+	const b4 m4 = islessequal(r4_A, r4_B);
 	const float4 r4_min = fmin(r4_A, r4_B);
 	const float4 r4_max = fmax(r4_A, r4_B);
 	const ushort4 r4x_min = select(r4x_B, r4x_A, m4);
@@ -502,7 +544,7 @@ uint octet_intersect_wide(
 	const float4 r5_B = float4(r4_min[1], r4_max[1], r4_min[3], r4_max[3]);
 	const ushort4 r5x_A = ushort4(r4x_min[0], r4x_max[0], r4x_min[2], r4x_max[2]);
 	const ushort4 r5x_B = ushort4(r4x_min[1], r4x_max[1], r4x_min[3], r4x_max[3]);
-	const short4 m5 = convert_short4(islessequal(r5_A, r5_B));
+	const b4 m5 = islessequal(r5_A, r5_B);
 	const float4 r5_min = fmin(r5_A, r5_B);
 	const float4 r5_max = fmax(r5_A, r5_B);
 	const ushort4 r5x_min = select(r5x_B, r5x_A, m5);
@@ -510,7 +552,7 @@ uint octet_intersect_wide(
 
 	child_index->distance = f32x8(r5_min[0], r5_max[0], r5_min[1], r5_max[1], r5_min[2], r5_max[2], r5_min[3], r5_max[3]);
 	child_index->index = u16x8(r5x_min[0], r5x_max[0], r5x_min[1], r5x_max[1], r5x_min[2], r5x_max[2], r5x_min[3], r5x_max[3]);
-	return uint(count);
+	return ushort(count);
 }
 
 // see George Marsaglia http://www.jstatsoft.org/v08/i14/paper

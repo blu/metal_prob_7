@@ -60,7 +60,7 @@
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "-screen &quot;2560 1400 60&quot;"
+            argument = "-screen &quot;2560 1440 60&quot;"
             isEnabled = "YES">
          </CommandLineArgument>
       </CommandLineArguments>
