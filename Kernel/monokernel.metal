@@ -9,9 +9,6 @@ typedef uint32_t __attribute__((ext_vector_type(8))) u32x8;
 typedef int32_t  __attribute__((ext_vector_type(8))) s32x8;
 typedef float    __attribute__((ext_vector_type(8))) f32x8;
 
-// bool vectors; we never declare vars of these types, but
-// they may appear as temporaries, which we may then convert
-// to int-based masks
 typedef bool __attribute__((ext_vector_type(3))) b3;
 typedef bool __attribute__((ext_vector_type(4))) b4;
 typedef bool __attribute__((ext_vector_type(8))) b8;
@@ -22,28 +19,6 @@ int3 convert_int3(b3 a)
 		int(a[0]),
 		int(a[1]),
 		int(a[2]));
-}
-
-int4 convert_int4(b4 a)
-{
-	return -int4(
-		int(a[0]),
-		int(a[1]),
-		int(a[2]),
-		int(a[3]));
-}
-
-s32x8 convert_int8(b8 a)
-{
-	return -s32x8(
-		int(a[0]),
-		int(a[1]),
-		int(a[2]),
-		int(a[3]),
-		int(a[4]),
-		int(a[5]),
-		int(a[6]),
-		int(a[7]));
 }
 
 s16x8 convert_short8(b8 a)
@@ -57,41 +32,6 @@ s16x8 convert_short8(b8 a)
 		short(a[5]),
 		short(a[6]),
 		short(a[7]));
-}
-
-s16x8 convert_short8(s32x8 a)
-{
-	return s16x8(
-		short(a[0]),
-		short(a[1]),
-		short(a[2]),
-		short(a[3]),
-		short(a[4]),
-		short(a[5]),
-		short(a[6]),
-		short(a[7]));
-}
-
-u32x8 convert_uint8(u16x8 a)
-{
-	return u32x8(
-		int(a[0]),
-		int(a[1]),
-		int(a[2]),
-		int(a[3]),
-		int(a[4]),
-		int(a[5]),
-		int(a[6]),
-		int(a[7]));
-}
-
-short4 convert_short4(int4 a)
-{
-	return short4(
-		short(a[0]),
-		short(a[1]),
-		short(a[2]),
-		short(a[3]));
 }
 
 uint32_t as_uint(float a)
@@ -139,48 +79,6 @@ int isgreaterequal(float a, float b)
 	return a >= b;
 }
 
-ushort4 select(ushort4 a, ushort4 b, short4 c)
-{
-	return ushort4(
-		c[0] ? b[0] : a[0],
-		c[1] ? b[1] : a[1],
-		c[2] ? b[2] : a[2],
-		c[3] ? b[3] : a[3]);
-}
-
-int4 select(int4 a, int4 b, int4 c)
-{
-	return int4(
-		c[0] ? b[0] : a[0],
-		c[1] ? b[1] : a[1],
-		c[2] ? b[2] : a[2],
-		c[3] ? b[3] : a[3]);
-}
-
-float3 select(float3 a, float3 b, uint3 c)
-{
-	return float3(
-		c[0] ? b[0] : a[0],
-		c[1] ? b[1] : a[1],
-		c[2] ? b[2] : a[2]);
-}
-
-f32x8 select(f32x8 a, f32x8 b, s32x8 c)
-{
-	return f32x8(
-		c[0] ? b[0] : a[0],
-		c[1] ? b[1] : a[1],
-		c[2] ? b[2] : a[2],
-		c[3] ? b[3] : a[3],
-		c[4] ? b[4] : a[4],
-		c[5] ? b[5] : a[5],
-		c[6] ? b[6] : a[6],
-		c[7] ? b[7] : a[7]);
-}
-
-// next select is illegal in OCL due to its
-// mask size mismatching its a/b type size,
-// but it saves us a s16x8 -> s32x8 cast
 f32x8 select(f32x8 a, f32x8 b, s16x8 c)
 {
 	return f32x8(
