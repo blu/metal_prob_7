@@ -36,6 +36,7 @@ out cerr;
 const char arg_prefix[]                   = "-";
 const char arg_screen[]                   = "screen";
 const char arg_frames[]                   = "frames";
+const char arg_frame_id_mask[]            = "frame_id_mask";
 const char arg_frame_invar_rng[]          = "frame_invar_rng";
 const char arg_workgroup_size[]           = "group_size";
 
@@ -104,6 +105,13 @@ int parseCLI(
 
 		if (!std::strcmp(argv[i] + prefix_len, arg_frames)) {
 			if (++i == argc || 1 != sscanf(argv[i], "%u", &param.frames))
+				success = false;
+
+			continue;
+		}
+
+		if (!std::strcmp(argv[i] + prefix_len, arg_frame_id_mask)) {
+			if (++i == argc || 1 != sscanf(argv[i], "%x", &param.frame_msk))
 				success = false;
 
 			continue;
