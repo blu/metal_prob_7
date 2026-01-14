@@ -374,6 +374,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 11.1;
+				MTL_COMPILER_FLAGS = "";
 				MTL_PREPROCESSOR_DEFINITIONS = "INFINITE_RAY=1 USE_DST_BUFFER=1";
 				PRECOMPS_INCLUDE_HEADERS_FROM_BUILT_PRODUCTS_DIR = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.example.apple-samplecode.$(PRODUCT_NAME)${SAMPLE_CODE_DISAMBIGUATOR}";
@@ -409,11 +410,15 @@
 				);
 				LLVM_LTO = YES;
 				MACOSX_DEPLOYMENT_TARGET = 11.1;
+				MTL_COMPILER_FLAGS = "-Wno-parentheses -Wno-unused-variable";
 				MTL_PREPROCESSOR_DEFINITIONS = "INFINITE_RAY=1 USE_DST_BUFFER=1";
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_CFLAGS = (
 					"-fomit-frame-pointer",
 					"-fhonor-infinities",
+					"-Wno-shorten-64-to-32",
+					"-Wno-unused-function",
+					"-Wno-unused-variable",
 				);
 				OTHER_CPLUSPLUSFLAGS = "$(OTHER_CFLAGS)";
 				PRECOMPS_INCLUDE_HEADERS_FROM_BUILT_PRODUCTS_DIR = NO;
