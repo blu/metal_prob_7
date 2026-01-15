@@ -12,9 +12,11 @@ int main(int argc, const char * argv[])
 	param.group_w = -1U;
 	param.group_h = -1U;
 
-	if (parseCLI(argc, argv)) {
-		return -1;
-	}
+	// read render setup from CLI
+	const int result_cli = parseCLI(argc, argv);
+
+	if (0 != result_cli)
+		return result_cli;
 
 	@autoreleasepool {
 		NSApplication *application = [NSApplication sharedApplication];
