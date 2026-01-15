@@ -180,7 +180,7 @@ struct content_init_arg cont_init_arg;
 			// a scheme in place due to the fact that a blocking wait in such a scheme
 			// would be as detrimental to the purposes of this code as kernel argument
 			// corruption and/or frame tearing are, which is what occurs under the same
-			// conditions when unsynced; goal is sustain rock-solid FPS or don't bother
+			// conditions when unsynced; goal is to sustain constant FPS or don't bother
 			[commandBuffer commit];
 
 #else
