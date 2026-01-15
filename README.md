@@ -24,7 +24,7 @@ $ xcodebuild -scheme problem_7-macOS -derivedDataPath ./DerivedData -quiet build
 Invoke executable from XCode (`cmd-r`) or from the command line (full CLI control) as:  
 
 ```
-$ cd DerivedData/problem_7/Build/Products/Release/problem_7.app/Contents/MacOS
+$ cd DerivedData/Build/Products/Release/problem_7.app/Contents/MacOS
 $ ./problem_7 -help
 usage: ./problem_7 [<option> ...]
 options (multiple args to an option must constitute a single string, eg. -foo "a b c"):
