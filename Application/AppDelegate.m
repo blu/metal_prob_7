@@ -58,6 +58,7 @@
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
 {
+	[NSApp activateIgnoringOtherApps:YES];
 	[_controller.window makeKeyAndOrderFront:self];
 }
 
