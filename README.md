@@ -21,7 +21,7 @@ Build project from within XCode (`cmd-b`) or from the command line:
 $ xcodebuild -scheme problem_7-macOS -derivedDataPath ./DerivedData -quiet build
 ```
 
-Invoke executable from XCode (`cmd-r`) or from the command line (full CLI control) as:  
+Invoke executable from XCode (`cmd-r`) or from the command line (full CLI control) as:
 
 ```
 $ cd DerivedData/Build/Products/Release/problem_7.app/Contents/MacOS
