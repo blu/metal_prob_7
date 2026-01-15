@@ -173,6 +173,14 @@ struct content_init_arg cont_init_arg;
 			[computeEncoder endEncoding];
 
 #if USE_DST_BUFFER
+			// synchronisation considerations:
+			// usually, here we'd have an -addCompletedHandler which'd signal completion
+			// of this command buffer, as part of our n-buffering; that signal would
+			// then be waited upon by the -replaceRegion call below; we don't have such
+			// a scheme in place due to the fact that a blocking wait in such a scheme
+			// would be as detrimental to the purposes of this code as kernel argument
+			// corruption and/or frame tearing are, which is what occurs under the same
+			// conditions when unsynced; goal is sustain rock-solid FPS or don't bother
 			[commandBuffer commit];
 
 #else
