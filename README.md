@@ -28,7 +28,7 @@ Here we should note that pixels are but a convenient abstraction of our spatial 
 The Temporal Dimension
 ----------------------
 
-So far we have discussed only the spatial characeristics of our rendering setup -- samples-per-pixel; pixel being a quantum element of abstreaction of our spatial perception, and carriers of luma -- something our vision works with. But inherently we are trying to solve a *stohastic integration* problem, so we are *bound* to use multiplicity. As we have severely (and intentionally) degraded our samples-per-pixel, our multiplicity may come from elsewhere.
+So far we have discussed only the spatial characeristics of our rendering setup -- samples-per-pixel; pixels being quantum elements of abstraction of our spatial perception, and carriers of luma -- something our vision works with. But inherently we are trying to solve a *stohastic integration* problem, so we are *bound* to use multiplicity. As we have severely (and intentionally) degraded our samples-per-pixel, our multiplicity may come from elsewhere.
 
 Hereby we introduce a new metric: samples-per-pixel-per-second, as a practical unit of the generic *samples-per-space-per-time*, that our spatio-temporal vison works with at some reasonable level of abstraction.
 
