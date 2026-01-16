@@ -103,3 +103,9 @@ Unadulterated 1-spp Stochastics
 To get an idea of what our stochactic-sampling baseline looks like, run the test app with CLI option `-frame_invar_rng` -- that produces a frame-invariant, i.e. time-invariant sampling of an otherwise dynamic AO scene.
 
 Please note, that despite our limitation to 1-spp, we can (and really should) still employ some IS-style techniques to improve the "information value" of our 1-spp. Namely, we use cosine-weighted distribution for the off-surface shooting direction of our AO rays. But that is the baseline in path tracing, so it is all fair.
+
+
+Scene Content
+-------------
+
+The test app contains 3 voxel-comprised scenes, of which one is repeated under a different camera angle, so 4 scenes altogether. To see a full timeline with all scenes one'd need approximately 10K frames at 60 Hz, or 20K frames at 120 Hz, etc. The number of frames is specified via the `-frames` CLI option.
