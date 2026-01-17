@@ -4,6 +4,8 @@
 
 cd "DerivedData/Build/Products/Release/problem_7.app/Contents/MacOS"
 
+/usr/bin/time ./problem_7 -screen "3456 2160 30"  -frames 500 -frame_invar_rng
+
 /usr/bin/time ./problem_7 -screen "3456 2160 30"  -frames 500  # Hz = 120 / 4
 /usr/bin/time ./problem_7 -screen "3456 2160 60"  -frames 1000 # Hz = 120 / 2
 /usr/bin/time ./problem_7 -screen "3456 2160 120" -frames 2000 # Hz = 120 / 1
