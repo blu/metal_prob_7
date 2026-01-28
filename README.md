@@ -80,12 +80,13 @@ options (multiple args to an option must constitute a single string, eg. -foo "a
 Reference Performance (screen CLI)
 ----------------------------------
 
-| device                     | resolution @ Hz   |
-| -------------------------- | ----------------- |
-| Apple M1 (7-core GPU)      | 2560 x 1600 @ 60  |
-| Apple M1 (8-core GPU)      | 2560 x 1728 @ 60  |
-| Apple M2 Max (30-core GPU) | 3456 x 2160 @ 120 |
-| Apple M2 Max (38-core GPU) | 3840 x 2160 @ 120 |
+| device                          | resolution @ Hz   |
+| ------------------------------- | ----------------- |
+| MBA M1 (7-core GPU)             | 2560 x 1600 @ 60  |
+| Mac mini M1 (8-core GPU)        | 2560 x 1728 @ 60  |
+| Mac Studio M2 Max (30-core GPU) | 3456 x 2160 @ 120 |
+| Mac Studio M2 Max (38-core GPU) | 3840 x 2160 @ 120 |
+| MBP M3 Max (40-core GPU)        | 3392 x 2176 @ 120 |
 
 
 Please note, that the above Hz values are the top FPS for these resolutions on these devices. One can always go with lower Hz, using integer denominators of the monitor refresh rate. For instance, for a monitor driven by macOS at 120Hz, the Hz denominations would be:
