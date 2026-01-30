@@ -119,6 +119,12 @@ struct content_init_arg cont_init_arg;
 	uint32_t frame = frame_id; // frame_id updated by content_frame below
 	static atomic_uint unprocessed;
 
+	if (atomic_fetch_add(&unprocessed, 1) == n_buffering) {
+		atomic_fetch_sub(&unprocessed, 1);
+		NSLog(@"warning: GPU overload!");
+		return;
+	}
+
 	@autoreleasepool {
 
 		struct content_frame_arg frame_arg;
@@ -141,8 +147,6 @@ struct content_init_arg cont_init_arg;
 
 		// execute compute kernel
 		{
-			atomic_fetch_add(&unprocessed, 1);
-
 			id<MTLCommandBuffer> commandBuffer = [_commandQueue commandBuffer];
 
 			id<MTLComputeCommandEncoder> computeEncoder = [commandBuffer computeCommandEncoder];
@@ -176,28 +180,21 @@ struct content_init_arg cont_init_arg;
 
 			[computeEncoder endEncoding];
 
-#if USE_DST_BUFFER
+#if USE_DST_BUFFER == 0
+			[commandBuffer presentDrawable:drawable];
+
+#endif
 			[commandBuffer addCompletedHandler:^(id<MTLCommandBuffer> commandBuffer) {
 				atomic_fetch_sub(&unprocessed, 1);
 			}];
 
 			[commandBuffer commit];
 
-#else
-			[commandBuffer presentDrawable:drawable];
-			[commandBuffer commit];
-
-#endif
 		}
 
 #if USE_DST_BUFFER
 		if (frame < n_buffering - 1)
 			return;
-
-		if (atomic_load(&unprocessed) > n_buffering - 1) {
-			NSLog(@"warning: GPU overload!");
-			return;
-		}
 
 		frame -= n_buffering - 1;
 
