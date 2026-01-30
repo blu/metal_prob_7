@@ -127,7 +127,7 @@ struct content_init_arg cont_init_arg;
 
 	static atomic_uint unprocessed;
 
-	if (atomic_fetch_add(&unprocessed, 1) == n_buffering) {
+	if (atomic_fetch_add(&unprocessed, 1) == n_buffering - 1) {
 		atomic_fetch_sub(&unprocessed, 1);
 		NSLog(@"warning: GPU overload!");
 		return;
