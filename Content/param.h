@@ -35,12 +35,11 @@ extern "C" {
 #endif
 
 extern struct cli_param param; // updated by parseCLI
-extern uint32_t frame_id;      // updated by content_frame
 
 int parseCLI(int, const char **);
 int content_init(struct content_init_arg *);
 int content_deinit(void);
-int content_frame(struct content_frame_arg);
+int content_frame(struct content_frame_arg, uint32_t);
 
 #ifdef __cplusplus
 }

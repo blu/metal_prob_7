@@ -116,7 +116,15 @@ struct content_init_arg cont_init_arg;
 // Called whenever the view needs to render a frame.
 - (void)drawInMTKView:(nonnull MTKView *)view
 {
-	uint32_t frame = frame_id; // frame_id updated by content_frame below
+	static uint32_t frame_id;
+	uint32_t frame = frame_id++;
+
+	// have we produced enough frames?
+	if (frame == param.frames) {
+		[[NSApplication sharedApplication] terminate:nil];
+		return;
+	}
+
 	static atomic_uint unprocessed;
 
 	if (atomic_fetch_add(&unprocessed, 1) == n_buffering) {
@@ -133,7 +141,7 @@ struct content_init_arg cont_init_arg;
 		frame_arg.buffer[buffer_voxel] = _src_buffer[frame % n_buffering][buffer_voxel].contents;
 		frame_arg.buffer[buffer_carb]  = _src_buffer[frame % n_buffering][buffer_carb].contents;
 
-		if (content_frame(frame_arg)) {
+		if (content_frame(frame_arg, frame)) {
 			[[NSApplication sharedApplication] terminate:nil];
 		}
 

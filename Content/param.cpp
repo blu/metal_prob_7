@@ -1285,7 +1285,6 @@ bool ActionCameraLean::frame(
 
 
 cli_param param;
-uint32_t frame_id;
 
 namespace { // anonymous
 
@@ -1489,23 +1488,16 @@ int content_deinit(void)
 	return 0;
 }
 
-int content_frame(content_frame_arg arg)
+int content_frame(content_frame_arg arg, const uint32_t frame)
 {
 	const uint32_t image_w = param.image_w;
 	const uint32_t image_h = param.image_h;
-	const uint32_t frames  = param.frames;
 	const uint32_t fmask   = param.frame_msk;
-
-	const uint32_t frame = frame_id++;
 
 	void *octet_map_buffer = arg.buffer[buffer_octet];
 	void *leaf_map_buffer  = arg.buffer[buffer_leaf];
 	void *voxel_map_buffer = arg.buffer[buffer_voxel];
 	void *carb_map_buffer  = arg.buffer[buffer_carb];
-
-	// have we produced enough frames?
-	if (frame == frames)
-		return 1;
 
 #if FRAME_RATE == 0
 	const uint64_t tframe = timer_ns();
