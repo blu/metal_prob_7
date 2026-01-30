@@ -83,7 +83,7 @@ Reference Performance (screen CLI)
 | device                          | resolution @ Hz   |
 | ------------------------------- | ----------------- |
 | MBA M1 (7-core GPU)             | 2560 x 1600 @ 60  |
-| Mac mini M1 (8-core GPU)        | 2560 x 1728 @ 60  |
+| Mac mini M1 (8-core GPU)        | 2560 x 1712 @ 60  |
 | Mac Studio M2 Max (30-core GPU) | 3456 x 2160 @ 120 |
 | Mac Studio M2 Max (38-core GPU) | 3840 x 2160 @ 120 |
 | MBP M3 Max (40-core GPU)        | 3392 x 2176 @ 120 |
