@@ -1360,10 +1360,6 @@ const size_t carb_h = 6;
 const size_t mem_size_carb = carb_w * carb_h * sizeof(simd::f32x4);
 const size_t carb_count = mem_size_carb / sizeof(simd::f32x4);
 
-#if FRAME_RATE == 0
-uint64_t tlast;
-
-#endif
 Array< Timeslice > timeline;
 
 size_t track_cursor;
@@ -1500,6 +1496,7 @@ int content_frame(content_frame_arg arg, const uint32_t frame)
 	void *carb_map_buffer  = arg.buffer[buffer_carb];
 
 #if FRAME_RATE == 0
+	static uint64_t tlast;
 	const uint64_t tframe = timer_ns();
 
 	if (0 == frame)
