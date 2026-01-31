@@ -4,5 +4,5 @@
 
 cd "DerivedData/Build/Products/Release/problem_7.app/Contents/MacOS"
 
-/usr/bin/time ./problem_7 -screen "3456 2160 120" -frames 2000 -frame_invar_rng
-/usr/bin/time ./problem_7 -screen "3456 2160 120" -frames 2000
+/usr/bin/time ./problem_7 -screen "3840 2160 120" -frames 2000 -frame_invar_rng
+/usr/bin/time ./problem_7 -screen "3840 2160 120" -frames 2000
