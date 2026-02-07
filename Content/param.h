@@ -3,6 +3,8 @@
 
 #include <stdint.h>
 
+enum { FLAG_BORDERFUL = 1UL }; // window decor: borderful vs borderless
+
 struct cli_param {
 	uint32_t image_w;       // frame width
 	uint32_t image_h;       // frame height
@@ -11,6 +13,7 @@ struct cli_param {
 	uint32_t frame_msk;     // frame_id mask
 	uint32_t group_w;       // workgroup width
 	uint32_t group_h;       // workgroup height
+	uint32_t flags;
 };
 
 enum buffer_designations {

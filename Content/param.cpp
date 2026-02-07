@@ -39,6 +39,7 @@ const char arg_frames[]                   = "frames";
 const char arg_frame_id_mask[]            = "frame_id_mask";
 const char arg_frame_invar_rng[]          = "frame_invar_rng";
 const char arg_workgroup_size[]           = "group_size";
+const char arg_borderful[]                = "borderful";
 
 namespace testbed {
 
@@ -129,6 +130,11 @@ int parseCLI(
 			continue;
 		}
 
+		if (!std::strcmp(argv[i] + prefix_len, arg_borderful)) {
+			param.flags |= FLAG_BORDERFUL;
+			continue;
+		}
+
 		success = false;
 	}
 
@@ -138,7 +144,8 @@ int parseCLI(
 			"\t" << arg_prefix << arg_screen << " <width> <height> <Hz>\t: set framebuffer of specified geometry and refresh\n"
 			"\t" << arg_prefix << arg_frames << " <unsigned_integer>\t: set number of frames to run; default is max unsigned int\n"
 			"\t" << arg_prefix << arg_frame_invar_rng << "\t\t: use frame-invariant RNG for sampling\n"
-			"\t" << arg_prefix << arg_workgroup_size << " <width> <height>\t: set workgroup geometry; default is (execution_width, max_threads_per_group / execution_width)\n";
+			"\t" << arg_prefix << arg_workgroup_size << " <width> <height>\t: set workgroup geometry; default is (execution_width, max_threads_per_group / execution_width)\n"
+			"\t" << arg_prefix << arg_borderful << "\t\t\t: set style of output window to titled; default is borderless\n";
 
 		return 1;
 	}

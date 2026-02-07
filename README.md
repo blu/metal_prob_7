@@ -75,6 +75,7 @@ options (multiple args to an option must constitute a single string, eg. -foo "a
         -frames <unsigned_integer>      : set number of frames to run; default is max unsigned int
         -frame_invar_rng                : use frame-invariant RNG for sampling
         -group_size <width> <height>    : set workgroup geometry; default is (execution_width, max_threads_per_group / execution_width)
+        -borderful                      : set style of output window to titled; default is borderless
 ```
 
 Reference Performance (screen CLI)
